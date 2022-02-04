@@ -5,6 +5,7 @@ using Application.Entities;
 using Application.Extensions;
 using Domain.Exceptions;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -25,29 +26,33 @@ namespace Application.Commands
     {
         private readonly ICryptographyService _cryptographyService;
         private readonly ILocalGovImsPaymentApiClient _localGovImsPaymentApiClient;
-        private readonly Func<string, GovUkPayApiClient.Api.ICardPaymentsApi> _govUkPayClientFactory;
+        private readonly Func<string, GovUKPayApiClient.Api.ICardPaymentsApi> _govUKPayApiClientFactory;
 
         private readonly IAsyncRepository<Payment> _paymentRepository;
-        private readonly LocalGovImsApiClient.IClient _imsClient;
+        private readonly LocalGovImsApiClient.IClient _localGovImsApiClient;
+
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         private List<PendingTransactionModel> _pendingTransactions;
         private PendingTransactionModel _pendingTransaction;
-        private GovUkPayApiClient.Api.ICardPaymentsApi _govUkPayApiClient;
+        private GovUKPayApiClient.Api.ICardPaymentsApi _govUkPayApiClient;
         private Payment _payment;
         private CreatePaymentRequestCommandResult _result;
 
         public CreatePaymentRequestCommandHandler(
             ICryptographyService cryptographyService,
             ILocalGovImsPaymentApiClient localGovImsPaymentApiClient,
-            Func<string, GovUkPayApiClient.Api.ICardPaymentsApi> govUkPayClientFactory,
+            Func<string, GovUKPayApiClient.Api.ICardPaymentsApi> govUKPayApiClientFactory,
             IAsyncRepository<Payment> paymentRepository,
-            LocalGovImsApiClient.IClient imsClient)
+            LocalGovImsApiClient.IClient localGovImsApiClient,
+            IHttpContextAccessor httpContextAccessor)
         {
             _cryptographyService = cryptographyService;
             _localGovImsPaymentApiClient = localGovImsPaymentApiClient;
-            _govUkPayClientFactory = govUkPayClientFactory; 
+            _govUKPayApiClientFactory = govUKPayApiClientFactory; 
             _paymentRepository = paymentRepository;
-            _imsClient = imsClient;
+            _localGovImsApiClient = localGovImsApiClient;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<CreatePaymentRequestCommandResult> Handle(CreatePaymentRequestCommand request, CancellationToken cancellationToken)
@@ -94,10 +99,9 @@ namespace Application.Commands
 
         private async Task GetClient()
         {
-            // TODO: Add Swagger spec data so that we know this result is a string, not an object 
-            var apiKey = await _imsClient.ApiFundmetadataAsync(_pendingTransaction.FundCode, "GovUkPay.Api.Key");
+            var apiKey = await _localGovImsApiClient.ApiFundmetadataAsync(_pendingTransaction.FundCode, "GovUkPay.Api.Key");
 
-            _govUkPayApiClient = _govUkPayClientFactory(apiKey.ToString());
+            _govUkPayApiClient = _govUKPayApiClientFactory(apiKey);
         }
 
         private async Task CreatePayment(CreatePaymentRequestCommand request)
@@ -115,18 +119,18 @@ namespace Application.Commands
         {
             try
             {
-                var model = new GovUkPayApiClient.Model.CreateCardPaymentRequest(
+                var model = new GovUKPayApiClient.Model.CreateCardPaymentRequest(
                     _pendingTransactions.Sum(x => x.Amount ?? 0).ToPence(),
                     false,
-                    "A test payment",
-                    "test@tes.com",
+                    await GetDescription(),
+                    null,
                     null,
                     null,
                     false,
-                    new GovUkPayApiClient.Model.PrefilledCardholderDetails()
+                    new GovUKPayApiClient.Model.PrefilledCardholderDetails()
                     {
                         CardholderName = _pendingTransaction.PayeeName,
-                        BillingAddress = new GovUkPayApiClient.Model.Address()
+                        BillingAddress = new GovUKPayApiClient.Model.Address()
                         {
                             Line1 = _pendingTransaction.PayeePremiseNumber,
                             Line2 = _pendingTransaction.PayeeStreet,
@@ -135,7 +139,7 @@ namespace Application.Commands
                         }
                     },
                     request.Reference,
-                    "https://localhost:44336/Payment/PaymentResponse/" + _payment.Identifier);
+                    GetReturnUrl());
 
                 var result = await _govUkPayApiClient.CreateAPaymentAsync(model);
 
@@ -151,6 +155,20 @@ namespace Application.Commands
             {
                 Log.Error(ex, "Unable to create payment");
             }
+        }
+
+        private async Task<string> GetDescription()
+        {
+            var fund = await _localGovImsApiClient.ApiFundsAsync(_pendingTransaction.FundCode);
+
+            return fund.FundName;
+        }
+
+        private string GetReturnUrl()
+        {
+            var host = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}{_httpContextAccessor.HttpContext.Request.PathBase}";
+
+            return $"{host}/Payment/PaymentResponse/" + _payment.Identifier;
         }
 
         private async Task UpdatePayment()

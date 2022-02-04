@@ -21,13 +21,13 @@ namespace Application
           
             services.AddTransient((apiKey) =>
             {
-                return new Func<string, GovUkPayApiClient.Api.ICardPaymentsApi>(
+                return new Func<string, GovUKPayApiClient.Api.ICardPaymentsApi>(
                     (apiKey) => {
 
-                        var config = new GovUkPayApiClient.Client.Configuration();
+                        var config = new GovUKPayApiClient.Client.Configuration();
                         config.AccessToken = apiKey;
 
-                        return new GovUkPayApiClient.Api.CardPaymentsApi(config);
+                        return new GovUKPayApiClient.Api.CardPaymentsApi(config);
                     }
                 );
             });

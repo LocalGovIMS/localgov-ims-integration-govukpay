@@ -33,8 +33,14 @@
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object"
+              "$ref": "#/definitions/Api.Controllers.AccountHolders.AccountHolderModel"
             }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
           }
         }
       }
@@ -74,6 +80,18 @@
             "schema": {
               "type": "object"
             }
+          },
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/Api.Controllers.AccountHolders.AccountHolderModel"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "type": "string"
+            }
           }
         }
       },
@@ -109,8 +127,11 @@
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object"
+              "$ref": "#/definitions/Api.Controllers.AccountHolders.AccountHolderModel"
             }
+          },
+          "400": {
+            "description": "Bad request"
           }
         }
       }
@@ -145,8 +166,14 @@
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object"
+              "type": "string"
             }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
           }
         }
       }
@@ -175,8 +202,14 @@
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object"
+              "$ref": "#/definitions/Api.Controllers.Funds.FundModel"
             }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
           }
         }
       }
@@ -204,8 +237,17 @@
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object"
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Api.Controllers.MethodOfPayments.MethodOfPaymentModel"
+              }
             }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
           }
         }
       }
@@ -245,6 +287,15 @@
             "schema": {
               "type": "object"
             }
+          },
+          "202": {
+            "description": "Accepted"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       }
@@ -273,8 +324,17 @@
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object"
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Api.Controllers.PendingTransactions.PendingTransactionModel"
+              }
             }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
           }
         }
       }
@@ -316,9 +376,12 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Ok"
+          },
+          "400": {
+            "description": "Bad request",
             "schema": {
-              "type": "object"
+              "type": "string"
             }
           }
         }
@@ -361,10 +424,13 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Ok",
             "schema": {
-              "type": "object"
+              "$ref": "#/definitions/BusinessLogic.Classes.ProcessPaymentResponse"
             }
+          },
+          "400": {
+            "description": "Bad request"
           }
         }
       }
@@ -404,6 +470,21 @@
             "schema": {
               "type": "object"
             }
+          },
+          "201": {
+            "description": "Created",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Api.Controllers.PendingTransactions.PendingTransactionModel"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "type": "string"
+            }
           }
         }
       }
@@ -432,8 +513,14 @@
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object"
+              "$ref": "#/definitions/Api.Controllers.ProcessedTransactions.ProcessedTransactionModel"
             }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
           }
         }
       }
@@ -443,7 +530,7 @@
         "tags": [
           "ProcessedTransactions"
         ],
-        "operationId": "ProcessedTransactions_Get2",
+        "operationId": "ProcessedTransactions_GetAll",
         "produces": [
           "application/json",
           "text/json",
@@ -522,8 +609,17 @@
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object"
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Api.Controllers.ProcessedTransactions.ProcessedTransactionModel"
+              }
             }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
           }
         }
       },
@@ -561,6 +657,18 @@
             "schema": {
               "type": "object"
             }
+          },
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/Api.Controllers.ProcessedTransactions.ProcessedTransactionModel"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "type": "string"
+            }
           }
         }
       }
@@ -590,8 +698,14 @@
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object"
+              "$ref": "#/definitions/Api.Controllers.Suspense.SuspenseModel"
             }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
           }
         }
       }
@@ -601,7 +715,7 @@
         "tags": [
           "Suspense"
         ],
-        "operationId": "Suspense_Get2",
+        "operationId": "Suspense_GetAll",
         "produces": [
           "application/json",
           "text/json",
@@ -626,8 +740,17 @@
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object"
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Api.Controllers.Suspense.SuspenseModel"
+              }
             }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
           }
         }
       },
@@ -664,6 +787,18 @@
             "description": "OK",
             "schema": {
               "type": "object"
+            }
+          },
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/Api.Controllers.Suspense.SuspenseModel"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "type": "string"
             }
           }
         }
@@ -739,11 +874,53 @@
         }
       }
     },
+    "Api.Controllers.Funds.FundModel": {
+      "type": "object",
+      "properties": {
+        "FundCode": {
+          "type": "string"
+        },
+        "FundName": {
+          "type": "string"
+        },
+        "UseGeneralLedgerCode": {
+          "type": "boolean"
+        },
+        "GeneralLedgerCode": {
+          "type": "string"
+        },
+        "IsGeneralLedgerDetail": {
+          "type": "boolean"
+        }
+      }
+    },
     "Api.Controllers.MethodOfPayments.SearchCriteriaModel": {
       "type": "object",
       "properties": {
         "Type": {
           "type": "string"
+        }
+      }
+    },
+    "Api.Controllers.MethodOfPayments.MethodOfPaymentModel": {
+      "type": "object",
+      "properties": {
+        "Code": {
+          "type": "string"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "MaximumAmount": {
+          "type": "number",
+          "format": "double"
+        },
+        "MinimumAmount": {
+          "type": "number",
+          "format": "double"
+        },
+        "Disabled": {
+          "type": "boolean"
         }
       }
     },
@@ -790,31 +967,6 @@
         "Amount": {
           "type": "number",
           "format": "double"
-        }
-      }
-    },
-    "Api.Controllers.PendingTransactions.AuthoriseModel": {
-      "type": "object",
-      "properties": {
-        "PspReference": {
-          "type": "string"
-        }
-      }
-    },
-    "Api.Controllers.PendingTransactions.ProcessPaymentModel": {
-      "type": "object",
-      "properties": {
-        "AuthResult": {
-          "type": "string"
-        },
-        "PspReference": {
-          "type": "string"
-        },
-        "MerchantReference": {
-          "type": "string"
-        },
-        "PaymentMethod": {
-          "type": "string"
         }
       }
     },
@@ -966,6 +1118,45 @@
           "type": "integer",
           "readOnly": true,
           "format": "int32"
+        }
+      }
+    },
+    "Api.Controllers.PendingTransactions.AuthoriseModel": {
+      "type": "object",
+      "properties": {
+        "PspReference": {
+          "type": "string"
+        }
+      }
+    },
+    "Api.Controllers.PendingTransactions.ProcessPaymentModel": {
+      "type": "object",
+      "properties": {
+        "AuthResult": {
+          "type": "string"
+        },
+        "PspReference": {
+          "type": "string"
+        },
+        "MerchantReference": {
+          "type": "string"
+        },
+        "PaymentMethod": {
+          "type": "string"
+        }
+      }
+    },
+    "BusinessLogic.Classes.ProcessPaymentResponse": {
+      "type": "object",
+      "properties": {
+        "RedirectUrl": {
+          "type": "string"
+        },
+        "Success": {
+          "type": "boolean"
+        },
+        "IsLegacy": {
+          "type": "boolean"
         }
       }
     },

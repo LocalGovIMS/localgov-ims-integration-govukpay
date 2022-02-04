@@ -37,13 +37,13 @@ namespace Application.Commands
         public PaymentResponseCommandHandler(
             IConfiguration configuration,
             ILocalGovImsPaymentApiClient localGovImsPaymentApiClient,
-            Func<string, GovUKPayApiClient.Api.ICardPaymentsApi> govUKPayApiClientFactory,
+            Func<string, GovUKPayApiClient.Api.ICardPaymentsApi> govUkPayApiClientFactory,
             IAsyncRepository<Payment> paymentRepository,
             LocalGovImsApiClient.IClient imsClient)
         {
             _configuration = configuration;
             _localGovImsPaymentApiClient = localGovImsPaymentApiClient;
-            _govUKPayApiClientFactory = govUKPayApiClientFactory;
+            _govUKPayApiClientFactory = govUkPayApiClientFactory;
             _paymentRepository = paymentRepository;
             _imsClient = imsClient;
         }
@@ -71,7 +71,7 @@ namespace Application.Commands
             return _processPaymentResponseModel;
         }
 
-        private static void ValidateRequest(PaymentResponseCommand request)
+        private void ValidateRequest(PaymentResponseCommand request)
         {
             if (string.IsNullOrEmpty(request.PaymentId))
             {

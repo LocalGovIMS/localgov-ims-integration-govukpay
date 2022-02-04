@@ -3,7 +3,7 @@
   "defaultVariables": null,
   "documentGenerator": {
     "fromDocument": {
-      "url": "C:\\Users\\dean009\\Desktop\\localgovimsapi_spec.json",
+      "url": "C:\\Users\\dean009\\Desktop\\localgovimsapi_spec_v2.json",
       "output": "LocalGovImsApiClient.nswag.json",
       "newLineBehavior": "Auto"
     }

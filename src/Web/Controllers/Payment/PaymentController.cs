@@ -28,7 +28,12 @@ namespace Web.Controllers
         {
             try
             {
-                var result = await Mediator.Send(new CreatePaymentRequestCommand() { Reference = reference, Hash = hash });
+                var result = await Mediator.Send(
+                    new CreatePaymentRequestCommand()
+                    {
+                        Reference = reference,
+                        Hash = hash
+                    });
 
                 return Redirect(result.NextUrl);
             }

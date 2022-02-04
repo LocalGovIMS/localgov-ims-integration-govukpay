@@ -8,7 +8,7 @@
     "ServiceName": "LocalGovImsApiClient",
     "AcceptAllUntrustedCertificates": true,
     "GeneratedFileName": "LocalGovImsApiClient",
-    "Endpoint": "C:\\Users\\dean009\\Desktop\\localgovimsapi_spec.json",
+    "Endpoint": "C:\\Users\\dean009\\Desktop\\localgovimsapi_spec_v2.json",
     "GeneratedFileNamePrefix": null,
     "GenerateCSharpClient": true,
     "GenerateTypeScriptClient": false,

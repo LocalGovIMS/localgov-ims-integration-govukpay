@@ -21,12 +21,12 @@ namespace Application.LocalGovImsApiClient
     {
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> ApiAccountholdersGetAsync(string reference);
+        System.Threading.Tasks.Task<AccountHolderModel> ApiAccountholdersGetAsync(string reference);
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> ApiAccountholdersGetAsync(string reference, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<AccountHolderModel> ApiAccountholdersGetAsync(string reference, System.Threading.CancellationToken cancellationToken);
     
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -39,39 +39,39 @@ namespace Application.LocalGovImsApiClient
     
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> ApiAccountholdersPatchAsync(AccountHolderModel model);
+        System.Threading.Tasks.Task<AccountHolderModel> ApiAccountholdersPatchAsync(AccountHolderModel model);
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> ApiAccountholdersPatchAsync(AccountHolderModel model, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<AccountHolderModel> ApiAccountholdersPatchAsync(AccountHolderModel model, System.Threading.CancellationToken cancellationToken);
     
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> ApiFundmetadataAsync(string fundCode, string key);
-    
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> ApiFundmetadataAsync(string fundCode, string key, System.Threading.CancellationToken cancellationToken);
-    
-        /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> ApiFundsAsync(string fundCode);
+        System.Threading.Tasks.Task<string> ApiFundmetadataAsync(string fundCode, string key);
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> ApiFundsAsync(string fundCode, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<string> ApiFundmetadataAsync(string fundCode, string key, System.Threading.CancellationToken cancellationToken);
     
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> ApiMethodofpaymentsAsync(string searchCriteriaModel_type);
+        System.Threading.Tasks.Task<FundModel> ApiFundsAsync(string fundCode);
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> ApiMethodofpaymentsAsync(string searchCriteriaModel_type, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<FundModel> ApiFundsAsync(string fundCode, System.Threading.CancellationToken cancellationToken);
+    
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MethodOfPaymentModel>> ApiMethodofpaymentsAsync(string searchCriteriaModel_type);
+    
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MethodOfPaymentModel>> ApiMethodofpaymentsAsync(string searchCriteriaModel_type, System.Threading.CancellationToken cancellationToken);
     
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -84,30 +84,30 @@ namespace Application.LocalGovImsApiClient
     
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> ApiPendingtransactionsGetAsync(string reference);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<PendingTransactionModel>> ApiPendingtransactionsGetAsync(string reference);
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> ApiPendingtransactionsGetAsync(string reference, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<PendingTransactionModel>> ApiPendingtransactionsGetAsync(string reference, System.Threading.CancellationToken cancellationToken);
     
-        /// <returns>OK</returns>
+        /// <returns>Ok</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> ApiPendingtransactionAuthoriseAsync(string reference, AuthoriseModel model);
-    
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> ApiPendingtransactionAuthoriseAsync(string reference, AuthoriseModel model, System.Threading.CancellationToken cancellationToken);
-    
-        /// <returns>OK</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> ApiPendingtransactionProcesspaymentAsync(string reference, ProcessPaymentModel model);
+        System.Threading.Tasks.Task ApiPendingtransactionAuthoriseAsync(string reference, AuthoriseModel model);
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>OK</returns>
+        /// <returns>Ok</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> ApiPendingtransactionProcesspaymentAsync(string reference, ProcessPaymentModel model, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task ApiPendingtransactionAuthoriseAsync(string reference, AuthoriseModel model, System.Threading.CancellationToken cancellationToken);
+    
+        /// <returns>Ok</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ProcessPaymentResponse> ApiPendingtransactionProcesspaymentAsync(string reference, ProcessPaymentModel model);
+    
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Ok</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<ProcessPaymentResponse> ApiPendingtransactionProcesspaymentAsync(string reference, ProcessPaymentModel model, System.Threading.CancellationToken cancellationToken);
     
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -120,21 +120,21 @@ namespace Application.LocalGovImsApiClient
     
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> ApiProcessedtransactionsGetAsync(string reference);
+        System.Threading.Tasks.Task<ProcessedTransactionModel> ApiProcessedtransactionsGetAsync(string reference);
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> ApiProcessedtransactionsGetAsync(string reference, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ProcessedTransactionModel> ApiProcessedtransactionsGetAsync(string reference, System.Threading.CancellationToken cancellationToken);
     
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> ApiProcessedtransactionsGetAsync(string searchCriteriaModel_receiptNumber, System.Collections.Generic.IEnumerable<string> searchCriteriaModel_fundCodes, string searchCriteriaModel_accountReference, double? searchCriteriaModel_amount, System.DateTimeOffset? searchCriteriaModel_startDate, System.DateTimeOffset? searchCriteriaModel_endDate, string searchCriteriaModel_appReference, System.Collections.Generic.IEnumerable<string> searchCriteriaModel_mopCodes, string searchCriteriaModel_narrative, string searchCriteriaModel_internalReference, string searchCriteriaModel_pspReference);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ProcessedTransactionModel>> ApiProcessedtransactionsGetAsync(string searchCriteriaModel_receiptNumber, System.Collections.Generic.IEnumerable<string> searchCriteriaModel_fundCodes, string searchCriteriaModel_accountReference, double? searchCriteriaModel_amount, System.DateTimeOffset? searchCriteriaModel_startDate, System.DateTimeOffset? searchCriteriaModel_endDate, string searchCriteriaModel_appReference, System.Collections.Generic.IEnumerable<string> searchCriteriaModel_mopCodes, string searchCriteriaModel_narrative, string searchCriteriaModel_internalReference, string searchCriteriaModel_pspReference);
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> ApiProcessedtransactionsGetAsync(string searchCriteriaModel_receiptNumber, System.Collections.Generic.IEnumerable<string> searchCriteriaModel_fundCodes, string searchCriteriaModel_accountReference, double? searchCriteriaModel_amount, System.DateTimeOffset? searchCriteriaModel_startDate, System.DateTimeOffset? searchCriteriaModel_endDate, string searchCriteriaModel_appReference, System.Collections.Generic.IEnumerable<string> searchCriteriaModel_mopCodes, string searchCriteriaModel_narrative, string searchCriteriaModel_internalReference, string searchCriteriaModel_pspReference, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ProcessedTransactionModel>> ApiProcessedtransactionsGetAsync(string searchCriteriaModel_receiptNumber, System.Collections.Generic.IEnumerable<string> searchCriteriaModel_fundCodes, string searchCriteriaModel_accountReference, double? searchCriteriaModel_amount, System.DateTimeOffset? searchCriteriaModel_startDate, System.DateTimeOffset? searchCriteriaModel_endDate, string searchCriteriaModel_appReference, System.Collections.Generic.IEnumerable<string> searchCriteriaModel_mopCodes, string searchCriteriaModel_narrative, string searchCriteriaModel_internalReference, string searchCriteriaModel_pspReference, System.Threading.CancellationToken cancellationToken);
     
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -147,21 +147,21 @@ namespace Application.LocalGovImsApiClient
     
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> ApiSuspenseGetAsync(int id);
+        System.Threading.Tasks.Task<SuspenseModel> ApiSuspenseGetAsync(int id);
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> ApiSuspenseGetAsync(int id, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<SuspenseModel> ApiSuspenseGetAsync(int id, System.Threading.CancellationToken cancellationToken);
     
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> ApiSuspenseGetAsync(System.DateTimeOffset? searchCriteriaModel_createdAtDateFrom, System.DateTimeOffset? searchCriteriaModel_createdAtDateTo);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SuspenseModel>> ApiSuspenseGetAsync(System.DateTimeOffset? searchCriteriaModel_createdAtDateFrom, System.DateTimeOffset? searchCriteriaModel_createdAtDateTo);
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<object> ApiSuspenseGetAsync(System.DateTimeOffset? searchCriteriaModel_createdAtDateFrom, System.DateTimeOffset? searchCriteriaModel_createdAtDateTo, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SuspenseModel>> ApiSuspenseGetAsync(System.DateTimeOffset? searchCriteriaModel_createdAtDateFrom, System.DateTimeOffset? searchCriteriaModel_createdAtDateTo, System.Threading.CancellationToken cancellationToken);
     
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -208,7 +208,7 @@ namespace Application.LocalGovImsApiClient
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<object> ApiAccountholdersGetAsync(string reference)
+        public System.Threading.Tasks.Task<AccountHolderModel> ApiAccountholdersGetAsync(string reference)
         {
             return ApiAccountholdersGetAsync(reference, System.Threading.CancellationToken.None);
         }
@@ -216,7 +216,7 @@ namespace Application.LocalGovImsApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<object> ApiAccountholdersGetAsync(string reference, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<AccountHolderModel> ApiAccountholdersGetAsync(string reference, System.Threading.CancellationToken cancellationToken)
         {
             if (reference == null)
                 throw new System.ArgumentNullException("reference");
@@ -257,12 +257,24 @@ namespace Application.LocalGovImsApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<object>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AccountHolderModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Bad request", status_, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == 404)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Not found", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -347,6 +359,26 @@ namespace Application.LocalGovImsApiClient
                             return objectResponse_.Object;
                         }
                         else
+                        if (status_ == 201)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<AccountHolderModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<AccountHolderModel>("Created", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<string>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<string>("Bad request", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
@@ -368,7 +400,7 @@ namespace Application.LocalGovImsApiClient
     
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<object> ApiAccountholdersPatchAsync(AccountHolderModel model)
+        public System.Threading.Tasks.Task<AccountHolderModel> ApiAccountholdersPatchAsync(AccountHolderModel model)
         {
             return ApiAccountholdersPatchAsync(model, System.Threading.CancellationToken.None);
         }
@@ -376,7 +408,7 @@ namespace Application.LocalGovImsApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<object> ApiAccountholdersPatchAsync(AccountHolderModel model, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<AccountHolderModel> ApiAccountholdersPatchAsync(AccountHolderModel model, System.Threading.CancellationToken cancellationToken)
         {
             if (model == null)
                 throw new System.ArgumentNullException("model");
@@ -421,12 +453,18 @@ namespace Application.LocalGovImsApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<object>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AccountHolderModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Bad request", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -450,7 +488,7 @@ namespace Application.LocalGovImsApiClient
     
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<object> ApiFundmetadataAsync(string fundCode, string key)
+        public System.Threading.Tasks.Task<string> ApiFundmetadataAsync(string fundCode, string key)
         {
             return ApiFundmetadataAsync(fundCode, key, System.Threading.CancellationToken.None);
         }
@@ -458,7 +496,7 @@ namespace Application.LocalGovImsApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<object> ApiFundmetadataAsync(string fundCode, string key, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<string> ApiFundmetadataAsync(string fundCode, string key, System.Threading.CancellationToken cancellationToken)
         {
             if (fundCode == null)
                 throw new System.ArgumentNullException("fundCode");
@@ -503,12 +541,24 @@ namespace Application.LocalGovImsApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<object>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<string>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Bad request", status_, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == 404)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Not found", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -532,7 +582,7 @@ namespace Application.LocalGovImsApiClient
     
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<object> ApiFundsAsync(string fundCode)
+        public System.Threading.Tasks.Task<FundModel> ApiFundsAsync(string fundCode)
         {
             return ApiFundsAsync(fundCode, System.Threading.CancellationToken.None);
         }
@@ -540,7 +590,7 @@ namespace Application.LocalGovImsApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<object> ApiFundsAsync(string fundCode, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<FundModel> ApiFundsAsync(string fundCode, System.Threading.CancellationToken cancellationToken)
         {
             if (fundCode == null)
                 throw new System.ArgumentNullException("fundCode");
@@ -581,12 +631,24 @@ namespace Application.LocalGovImsApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<object>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FundModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Bad request", status_, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == 404)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Not found", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -610,7 +672,7 @@ namespace Application.LocalGovImsApiClient
     
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<object> ApiMethodofpaymentsAsync(string searchCriteriaModel_type)
+        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MethodOfPaymentModel>> ApiMethodofpaymentsAsync(string searchCriteriaModel_type)
         {
             return ApiMethodofpaymentsAsync(searchCriteriaModel_type, System.Threading.CancellationToken.None);
         }
@@ -618,7 +680,7 @@ namespace Application.LocalGovImsApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<object> ApiMethodofpaymentsAsync(string searchCriteriaModel_type, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MethodOfPaymentModel>> ApiMethodofpaymentsAsync(string searchCriteriaModel_type, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/MethodOfPayments?");
@@ -660,12 +722,24 @@ namespace Application.LocalGovImsApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<object>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<MethodOfPaymentModel>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Bad request", status_, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == 404)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Not found", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -750,6 +824,24 @@ namespace Application.LocalGovImsApiClient
                             return objectResponse_.Object;
                         }
                         else
+                        if (status_ == 202)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Accepted", status_, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Bad request", status_, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == 500)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Internal server error", status_, responseText_, headers_, null);
+                        }
+                        else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
@@ -771,7 +863,7 @@ namespace Application.LocalGovImsApiClient
     
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<object> ApiPendingtransactionsGetAsync(string reference)
+        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<PendingTransactionModel>> ApiPendingtransactionsGetAsync(string reference)
         {
             return ApiPendingtransactionsGetAsync(reference, System.Threading.CancellationToken.None);
         }
@@ -779,7 +871,7 @@ namespace Application.LocalGovImsApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<object> ApiPendingtransactionsGetAsync(string reference, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<PendingTransactionModel>> ApiPendingtransactionsGetAsync(string reference, System.Threading.CancellationToken cancellationToken)
         {
             if (reference == null)
                 throw new System.ArgumentNullException("reference");
@@ -820,12 +912,24 @@ namespace Application.LocalGovImsApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<object>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<PendingTransactionModel>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Bad request", status_, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == 404)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Not found", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -847,17 +951,17 @@ namespace Application.LocalGovImsApiClient
             }
         }
     
-        /// <returns>OK</returns>
+        /// <returns>Ok</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<object> ApiPendingtransactionAuthoriseAsync(string reference, AuthoriseModel model)
+        public System.Threading.Tasks.Task ApiPendingtransactionAuthoriseAsync(string reference, AuthoriseModel model)
         {
             return ApiPendingtransactionAuthoriseAsync(reference, model, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>OK</returns>
+        /// <returns>Ok</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<object> ApiPendingtransactionAuthoriseAsync(string reference, AuthoriseModel model, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task ApiPendingtransactionAuthoriseAsync(string reference, AuthoriseModel model, System.Threading.CancellationToken cancellationToken)
         {
             if (reference == null)
                 throw new System.ArgumentNullException("reference");
@@ -881,7 +985,6 @@ namespace Application.LocalGovImsApiClient
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
     
                     PrepareRequest(client_, request_, urlBuilder_);
     
@@ -906,12 +1009,17 @@ namespace Application.LocalGovImsApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<object>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<string>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            return objectResponse_.Object;
+                            throw new ApiException<string>("Bad request", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -933,17 +1041,17 @@ namespace Application.LocalGovImsApiClient
             }
         }
     
-        /// <returns>OK</returns>
+        /// <returns>Ok</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<object> ApiPendingtransactionProcesspaymentAsync(string reference, ProcessPaymentModel model)
+        public System.Threading.Tasks.Task<ProcessPaymentResponse> ApiPendingtransactionProcesspaymentAsync(string reference, ProcessPaymentModel model)
         {
             return ApiPendingtransactionProcesspaymentAsync(reference, model, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>OK</returns>
+        /// <returns>Ok</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<object> ApiPendingtransactionProcesspaymentAsync(string reference, ProcessPaymentModel model, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<ProcessPaymentResponse> ApiPendingtransactionProcesspaymentAsync(string reference, ProcessPaymentModel model, System.Threading.CancellationToken cancellationToken)
         {
             if (reference == null)
                 throw new System.ArgumentNullException("reference");
@@ -992,12 +1100,18 @@ namespace Application.LocalGovImsApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<object>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ProcessPaymentResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Bad request", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -1082,6 +1196,26 @@ namespace Application.LocalGovImsApiClient
                             return objectResponse_.Object;
                         }
                         else
+                        if (status_ == 201)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<PendingTransactionModel>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<System.Collections.Generic.ICollection<PendingTransactionModel>>("Created", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<string>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<string>("Bad request", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
@@ -1103,7 +1237,7 @@ namespace Application.LocalGovImsApiClient
     
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<object> ApiProcessedtransactionsGetAsync(string reference)
+        public System.Threading.Tasks.Task<ProcessedTransactionModel> ApiProcessedtransactionsGetAsync(string reference)
         {
             return ApiProcessedtransactionsGetAsync(reference, System.Threading.CancellationToken.None);
         }
@@ -1111,7 +1245,7 @@ namespace Application.LocalGovImsApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<object> ApiProcessedtransactionsGetAsync(string reference, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<ProcessedTransactionModel> ApiProcessedtransactionsGetAsync(string reference, System.Threading.CancellationToken cancellationToken)
         {
             if (reference == null)
                 throw new System.ArgumentNullException("reference");
@@ -1152,12 +1286,24 @@ namespace Application.LocalGovImsApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<object>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ProcessedTransactionModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Bad request", status_, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == 404)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Not found", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -1181,7 +1327,7 @@ namespace Application.LocalGovImsApiClient
     
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<object> ApiProcessedtransactionsGetAsync(string searchCriteriaModel_receiptNumber, System.Collections.Generic.IEnumerable<string> searchCriteriaModel_fundCodes, string searchCriteriaModel_accountReference, double? searchCriteriaModel_amount, System.DateTimeOffset? searchCriteriaModel_startDate, System.DateTimeOffset? searchCriteriaModel_endDate, string searchCriteriaModel_appReference, System.Collections.Generic.IEnumerable<string> searchCriteriaModel_mopCodes, string searchCriteriaModel_narrative, string searchCriteriaModel_internalReference, string searchCriteriaModel_pspReference)
+        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ProcessedTransactionModel>> ApiProcessedtransactionsGetAsync(string searchCriteriaModel_receiptNumber, System.Collections.Generic.IEnumerable<string> searchCriteriaModel_fundCodes, string searchCriteriaModel_accountReference, double? searchCriteriaModel_amount, System.DateTimeOffset? searchCriteriaModel_startDate, System.DateTimeOffset? searchCriteriaModel_endDate, string searchCriteriaModel_appReference, System.Collections.Generic.IEnumerable<string> searchCriteriaModel_mopCodes, string searchCriteriaModel_narrative, string searchCriteriaModel_internalReference, string searchCriteriaModel_pspReference)
         {
             return ApiProcessedtransactionsGetAsync(searchCriteriaModel_receiptNumber, searchCriteriaModel_fundCodes, searchCriteriaModel_accountReference, searchCriteriaModel_amount, searchCriteriaModel_startDate, searchCriteriaModel_endDate, searchCriteriaModel_appReference, searchCriteriaModel_mopCodes, searchCriteriaModel_narrative, searchCriteriaModel_internalReference, searchCriteriaModel_pspReference, System.Threading.CancellationToken.None);
         }
@@ -1189,7 +1335,7 @@ namespace Application.LocalGovImsApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<object> ApiProcessedtransactionsGetAsync(string searchCriteriaModel_receiptNumber, System.Collections.Generic.IEnumerable<string> searchCriteriaModel_fundCodes, string searchCriteriaModel_accountReference, double? searchCriteriaModel_amount, System.DateTimeOffset? searchCriteriaModel_startDate, System.DateTimeOffset? searchCriteriaModel_endDate, string searchCriteriaModel_appReference, System.Collections.Generic.IEnumerable<string> searchCriteriaModel_mopCodes, string searchCriteriaModel_narrative, string searchCriteriaModel_internalReference, string searchCriteriaModel_pspReference, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ProcessedTransactionModel>> ApiProcessedtransactionsGetAsync(string searchCriteriaModel_receiptNumber, System.Collections.Generic.IEnumerable<string> searchCriteriaModel_fundCodes, string searchCriteriaModel_accountReference, double? searchCriteriaModel_amount, System.DateTimeOffset? searchCriteriaModel_startDate, System.DateTimeOffset? searchCriteriaModel_endDate, string searchCriteriaModel_appReference, System.Collections.Generic.IEnumerable<string> searchCriteriaModel_mopCodes, string searchCriteriaModel_narrative, string searchCriteriaModel_internalReference, string searchCriteriaModel_pspReference, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ProcessedTransactions?");
@@ -1271,12 +1417,24 @@ namespace Application.LocalGovImsApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<object>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ProcessedTransactionModel>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Bad request", status_, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == 404)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Not found", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -1361,6 +1519,26 @@ namespace Application.LocalGovImsApiClient
                             return objectResponse_.Object;
                         }
                         else
+                        if (status_ == 201)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProcessedTransactionModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<ProcessedTransactionModel>("Created", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<string>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<string>("Bad request", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
@@ -1382,7 +1560,7 @@ namespace Application.LocalGovImsApiClient
     
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<object> ApiSuspenseGetAsync(int id)
+        public System.Threading.Tasks.Task<SuspenseModel> ApiSuspenseGetAsync(int id)
         {
             return ApiSuspenseGetAsync(id, System.Threading.CancellationToken.None);
         }
@@ -1390,7 +1568,7 @@ namespace Application.LocalGovImsApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<object> ApiSuspenseGetAsync(int id, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<SuspenseModel> ApiSuspenseGetAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -1431,12 +1609,24 @@ namespace Application.LocalGovImsApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<object>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SuspenseModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Bad request", status_, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == 404)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Not found", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -1460,7 +1650,7 @@ namespace Application.LocalGovImsApiClient
     
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<object> ApiSuspenseGetAsync(System.DateTimeOffset? searchCriteriaModel_createdAtDateFrom, System.DateTimeOffset? searchCriteriaModel_createdAtDateTo)
+        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SuspenseModel>> ApiSuspenseGetAsync(System.DateTimeOffset? searchCriteriaModel_createdAtDateFrom, System.DateTimeOffset? searchCriteriaModel_createdAtDateTo)
         {
             return ApiSuspenseGetAsync(searchCriteriaModel_createdAtDateFrom, searchCriteriaModel_createdAtDateTo, System.Threading.CancellationToken.None);
         }
@@ -1468,7 +1658,7 @@ namespace Application.LocalGovImsApiClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<object> ApiSuspenseGetAsync(System.DateTimeOffset? searchCriteriaModel_createdAtDateFrom, System.DateTimeOffset? searchCriteriaModel_createdAtDateTo, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SuspenseModel>> ApiSuspenseGetAsync(System.DateTimeOffset? searchCriteriaModel_createdAtDateFrom, System.DateTimeOffset? searchCriteriaModel_createdAtDateTo, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Suspense?");
@@ -1514,12 +1704,24 @@ namespace Application.LocalGovImsApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<object>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<SuspenseModel>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Bad request", status_, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == 404)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Not found", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -1602,6 +1804,26 @@ namespace Application.LocalGovImsApiClient
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 201)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<SuspenseModel>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<SuspenseModel>("Created", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<string>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<string>("Bad request", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -1793,10 +2015,52 @@ namespace Application.LocalGovImsApiClient
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.5.2.0 (Newtonsoft.Json v12.0.0.2)")]
+    public partial class FundModel 
+    {
+        [Newtonsoft.Json.JsonProperty("FundCode", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string FundCode { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("FundName", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string FundName { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("UseGeneralLedgerCode", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? UseGeneralLedgerCode { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("GeneralLedgerCode", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string GeneralLedgerCode { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("IsGeneralLedgerDetail", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? IsGeneralLedgerDetail { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.5.2.0 (Newtonsoft.Json v12.0.0.2)")]
     public partial class SearchCriteriaModel 
     {
         [Newtonsoft.Json.JsonProperty("Type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Type { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.5.2.0 (Newtonsoft.Json v12.0.0.2)")]
+    public partial class MethodOfPaymentModel 
+    {
+        [Newtonsoft.Json.JsonProperty("Code", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Code { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("Name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Name { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("MaximumAmount", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public double? MaximumAmount { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("MinimumAmount", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public double? MinimumAmount { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("Disabled", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? Disabled { get; set; }
     
     
     }
@@ -1842,33 +2106,6 @@ namespace Application.LocalGovImsApiClient
     
         [Newtonsoft.Json.JsonProperty("Amount", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public double? Amount { get; set; }
-    
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.5.2.0 (Newtonsoft.Json v12.0.0.2)")]
-    public partial class AuthoriseModel 
-    {
-        [Newtonsoft.Json.JsonProperty("PspReference", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string PspReference { get; set; }
-    
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.5.2.0 (Newtonsoft.Json v12.0.0.2)")]
-    public partial class ProcessPaymentModel 
-    {
-        [Newtonsoft.Json.JsonProperty("AuthResult", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string AuthResult { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("PspReference", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string PspReference { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("MerchantReference", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string MerchantReference { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("PaymentMethod", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string PaymentMethod { get; set; }
     
     
     }
@@ -1987,6 +2224,48 @@ namespace Application.LocalGovImsApiClient
     
         [Newtonsoft.Json.JsonProperty("StatusId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int? StatusId { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.5.2.0 (Newtonsoft.Json v12.0.0.2)")]
+    public partial class AuthoriseModel 
+    {
+        [Newtonsoft.Json.JsonProperty("PspReference", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string PspReference { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.5.2.0 (Newtonsoft.Json v12.0.0.2)")]
+    public partial class ProcessPaymentModel 
+    {
+        [Newtonsoft.Json.JsonProperty("AuthResult", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string AuthResult { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("PspReference", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string PspReference { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("MerchantReference", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string MerchantReference { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("PaymentMethod", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string PaymentMethod { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.5.2.0 (Newtonsoft.Json v12.0.0.2)")]
+    public partial class ProcessPaymentResponse 
+    {
+        [Newtonsoft.Json.JsonProperty("RedirectUrl", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string RedirectUrl { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("Success", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? Success { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("IsLegacy", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool? IsLegacy { get; set; }
     
     
     }
