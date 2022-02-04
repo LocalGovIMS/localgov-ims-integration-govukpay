@@ -1,0 +1,1128 @@
+﻿{
+  "swagger": "2.0",
+  "info": {
+    "title": "Api",
+    "version": "v1"
+  },
+  "host": "localhost:44364",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/api/AccountHolders/{reference}": {
+      "get": {
+        "tags": [
+          "AccountHolders"
+        ],
+        "operationId": "AccountHolders_Get",
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "name": "reference",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/api/AccountHolders": {
+      "post": {
+        "tags": [
+          "AccountHolders"
+        ],
+        "operationId": "AccountHolders_Post",
+        "consumes": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml",
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Api.Controllers.AccountHolders.AccountHolderModel"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "AccountHolders"
+        ],
+        "operationId": "AccountHolders_Patch",
+        "consumes": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml",
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Api.Controllers.AccountHolders.AccountHolderModel"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/api/FundMetadata/{key}/{fundCode}": {
+      "get": {
+        "tags": [
+          "FundMetadata"
+        ],
+        "operationId": "FundMetadata_Get",
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "name": "fundCode",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "name": "key",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/api/Funds/{fundCode}": {
+      "get": {
+        "tags": [
+          "Funds"
+        ],
+        "operationId": "Funds_Get",
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "name": "fundCode",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/api/MethodOfPayments": {
+      "get": {
+        "tags": [
+          "MethodOfPayments"
+        ],
+        "operationId": "MethodOfPayments_Get",
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "name": "searchCriteriaModel.type",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/api/Notification": {
+      "post": {
+        "tags": [
+          "Notification"
+        ],
+        "operationId": "Notification_Post",
+        "consumes": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml",
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Api.Controllers.Notification.NotificationModel"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/api/PendingTransactions/{reference}": {
+      "get": {
+        "tags": [
+          "PendingTransactions"
+        ],
+        "operationId": "PendingTransactions_Get",
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "name": "reference",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/api/PendingTransaction/{reference}/Authorise": {
+      "post": {
+        "tags": [
+          "PendingTransactions"
+        ],
+        "operationId": "PendingTransactions_Authorise",
+        "consumes": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml",
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "name": "reference",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "model",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Api.Controllers.PendingTransactions.AuthoriseModel"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/api/PendingTransaction/{reference}/ProcessPayment": {
+      "post": {
+        "tags": [
+          "PendingTransactions"
+        ],
+        "operationId": "PendingTransactions_ProcessPayment",
+        "consumes": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml",
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "name": "reference",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "model",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Api.Controllers.PendingTransactions.ProcessPaymentModel"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/api/PendingTransactions": {
+      "post": {
+        "tags": [
+          "PendingTransactions"
+        ],
+        "operationId": "PendingTransactions_Post",
+        "consumes": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml",
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Api.Controllers.PendingTransactions.PendingTransactionModel"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/api/ProcessedTransactions/{reference}": {
+      "get": {
+        "tags": [
+          "ProcessedTransactions"
+        ],
+        "operationId": "ProcessedTransactions_Get",
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "name": "reference",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/api/ProcessedTransactions": {
+      "get": {
+        "tags": [
+          "ProcessedTransactions"
+        ],
+        "operationId": "ProcessedTransactions_Get2",
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "name": "searchCriteriaModel.receiptNumber",
+            "in": "query"
+          },
+          {
+            "type": "array",
+            "name": "searchCriteriaModel.fundCodes",
+            "in": "query",
+            "collectionFormat": "multi",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "type": "string",
+            "name": "searchCriteriaModel.accountReference",
+            "in": "query"
+          },
+          {
+            "type": "number",
+            "name": "searchCriteriaModel.amount",
+            "in": "query",
+            "format": "double"
+          },
+          {
+            "type": "string",
+            "name": "searchCriteriaModel.startDate",
+            "in": "query",
+            "format": "date-time"
+          },
+          {
+            "type": "string",
+            "name": "searchCriteriaModel.endDate",
+            "in": "query",
+            "format": "date-time"
+          },
+          {
+            "type": "string",
+            "name": "searchCriteriaModel.appReference",
+            "in": "query"
+          },
+          {
+            "type": "array",
+            "name": "searchCriteriaModel.mopCodes",
+            "in": "query",
+            "collectionFormat": "multi",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "type": "string",
+            "name": "searchCriteriaModel.narrative",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "name": "searchCriteriaModel.internalReference",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "name": "searchCriteriaModel.pspReference",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "ProcessedTransactions"
+        ],
+        "operationId": "ProcessedTransactions_Post",
+        "consumes": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml",
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Api.Controllers.ProcessedTransactions.ProcessedTransactionModel"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/api/Suspense/{id}": {
+      "get": {
+        "tags": [
+          "Suspense"
+        ],
+        "operationId": "Suspense_Get",
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/api/Suspense": {
+      "get": {
+        "tags": [
+          "Suspense"
+        ],
+        "operationId": "Suspense_Get2",
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "name": "searchCriteriaModel.createdAtDateFrom",
+            "in": "query",
+            "format": "date-time"
+          },
+          {
+            "type": "string",
+            "name": "searchCriteriaModel.createdAtDateTo",
+            "in": "query",
+            "format": "date-time"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Suspense"
+        ],
+        "operationId": "Suspense_Post",
+        "consumes": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml",
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Api.Controllers.Suspense.SuspenseModel"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Api.Controllers.AccountHolders.AccountHolderModel": {
+      "type": "object",
+      "properties": {
+        "AccountReference": {
+          "type": "string"
+        },
+        "FundCode": {
+          "type": "string"
+        },
+        "CurrentBalance": {
+          "type": "number",
+          "format": "double"
+        },
+        "PeriodCredit": {
+          "type": "number",
+          "format": "double"
+        },
+        "PeriodDebit": {
+          "type": "number",
+          "format": "double"
+        },
+        "Title": {
+          "type": "string"
+        },
+        "Forename": {
+          "type": "string"
+        },
+        "Surname": {
+          "type": "string"
+        },
+        "HouseNumber": {
+          "type": "string"
+        },
+        "AddressLine1": {
+          "type": "string"
+        },
+        "AddressLine2": {
+          "type": "string"
+        },
+        "AddressLine3": {
+          "type": "string"
+        },
+        "AddressLine4": {
+          "type": "string"
+        },
+        "Postcode": {
+          "type": "string"
+        },
+        "RecordType": {
+          "type": "string"
+        },
+        "UserField1": {
+          "type": "string"
+        },
+        "UserField2": {
+          "type": "string"
+        },
+        "UserField3": {
+          "type": "string"
+        },
+        "PersonalisedStopMessage": {
+          "type": "string"
+        },
+        "StopMessageReference": {
+          "type": "string"
+        }
+      }
+    },
+    "Api.Controllers.MethodOfPayments.SearchCriteriaModel": {
+      "type": "object",
+      "properties": {
+        "Type": {
+          "type": "string"
+        }
+      }
+    },
+    "Api.Controllers.Notification.NotificationModel": {
+      "type": "object",
+      "properties": {
+        "MerchantReference": {
+          "type": "string"
+        },
+        "EventCode": {
+          "type": "string"
+        },
+        "OriginalReference": {
+          "type": "string"
+        },
+        "PspReference": {
+          "type": "string"
+        },
+        "EventDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "PaymentMethod": {
+          "type": "string"
+        },
+        "Success": {
+          "type": "boolean"
+        },
+        "Reason": {
+          "type": "string"
+        },
+        "Operations": {
+          "type": "string"
+        },
+        "Live": {
+          "type": "boolean"
+        },
+        "Processed": {
+          "type": "boolean"
+        },
+        "MerchantAccountCode": {
+          "type": "string"
+        },
+        "Amount": {
+          "type": "number",
+          "format": "double"
+        }
+      }
+    },
+    "Api.Controllers.PendingTransactions.AuthoriseModel": {
+      "type": "object",
+      "properties": {
+        "PspReference": {
+          "type": "string"
+        }
+      }
+    },
+    "Api.Controllers.PendingTransactions.ProcessPaymentModel": {
+      "type": "object",
+      "properties": {
+        "AuthResult": {
+          "type": "string"
+        },
+        "PspReference": {
+          "type": "string"
+        },
+        "MerchantReference": {
+          "type": "string"
+        },
+        "PaymentMethod": {
+          "type": "string"
+        }
+      }
+    },
+    "Api.Controllers.PendingTransactions.PendingTransactionModel": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "integer",
+          "readOnly": true,
+          "format": "int32"
+        },
+        "Reference": {
+          "type": "string",
+          "readOnly": true
+        },
+        "InternalReference": {
+          "type": "string",
+          "readOnly": true
+        },
+        "OfficeCode": {
+          "type": "string",
+          "maxLength": 2,
+          "minLength": 0
+        },
+        "CreatedDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "TransactionDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "AccountReference": {
+          "type": "string",
+          "maxLength": 30,
+          "minLength": 0
+        },
+        "UserCode": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "FundCode": {
+          "type": "string",
+          "maxLength": 5,
+          "minLength": 0
+        },
+        "MopCode": {
+          "type": "string",
+          "maxLength": 5,
+          "minLength": 0
+        },
+        "Amount": {
+          "type": "number",
+          "format": "double"
+        },
+        "VatCode": {
+          "type": "string",
+          "maxLength": 2,
+          "minLength": 0
+        },
+        "VatRate": {
+          "type": "number",
+          "readOnly": true,
+          "format": "float"
+        },
+        "VatAmount": {
+          "type": "number",
+          "readOnly": true,
+          "format": "double"
+        },
+        "Narrative": {
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 0
+        },
+        "BatchReference": {
+          "type": "string",
+          "maxLength": 30,
+          "minLength": 0
+        },
+        "ExternalReference": {
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 0
+        },
+        "PayeeName": {
+          "type": "string",
+          "maxLength": 50,
+          "minLength": 0
+        },
+        "PayeeBusinessName": {
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 0
+        },
+        "PayeePremiseNumber": {
+          "type": "string",
+          "maxLength": 50,
+          "minLength": 0
+        },
+        "PayeePremiseName": {
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 0
+        },
+        "PayeeStreet": {
+          "type": "string",
+          "maxLength": 50,
+          "minLength": 0
+        },
+        "PayeeArea": {
+          "type": "string",
+          "maxLength": 50,
+          "minLength": 0
+        },
+        "PayeeTown": {
+          "type": "string",
+          "maxLength": 50,
+          "minLength": 0
+        },
+        "PayeeCounty": {
+          "type": "string",
+          "maxLength": 50,
+          "minLength": 0
+        },
+        "PayeePostCode": {
+          "type": "string",
+          "maxLength": 10,
+          "minLength": 0
+        },
+        "SuccessUrl": {
+          "type": "string"
+        },
+        "CancelUrl": {
+          "type": "string",
+          "maxLength": 255,
+          "minLength": 0
+        },
+        "FailUrl": {
+          "type": "string",
+          "maxLength": 255,
+          "minLength": 0
+        },
+        "ExpiryDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "StatusId": {
+          "type": "integer",
+          "readOnly": true,
+          "format": "int32"
+        }
+      }
+    },
+    "Api.Controllers.ProcessedTransactions.ProcessedTransactionModel": {
+      "type": "object",
+      "properties": {
+        "Reference": {
+          "type": "string"
+        },
+        "InternalReference": {
+          "type": "string"
+        },
+        "PspReference": {
+          "type": "string"
+        },
+        "OfficeCode": {
+          "type": "string"
+        },
+        "EntryDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "TransactionDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "AccountReference": {
+          "type": "string"
+        },
+        "UserCode": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "FundCode": {
+          "type": "string"
+        },
+        "MopCode": {
+          "type": "string"
+        },
+        "Amount": {
+          "type": "number",
+          "format": "double"
+        },
+        "VatCode": {
+          "type": "string"
+        },
+        "VatRate": {
+          "type": "number",
+          "format": "float"
+        },
+        "VatAmount": {
+          "type": "number",
+          "format": "double"
+        },
+        "Narrative": {
+          "type": "string"
+        },
+        "BatchReference": {
+          "type": "string"
+        }
+      }
+    },
+    "Api.Controllers.ProcessedTransactions.SearchCriteriaModel": {
+      "type": "object",
+      "properties": {
+        "ReceiptNumber": {
+          "type": "string"
+        },
+        "FundCodes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "AccountReference": {
+          "type": "string"
+        },
+        "Amount": {
+          "type": "number",
+          "format": "double"
+        },
+        "StartDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "EndDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "AppReference": {
+          "type": "string"
+        },
+        "MopCodes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "Narrative": {
+          "type": "string"
+        },
+        "InternalReference": {
+          "type": "string"
+        },
+        "PspReference": {
+          "type": "string"
+        }
+      }
+    },
+    "Api.Controllers.Suspense.SuspenseModel": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "TransactionDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "CreatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "AccountNumber": {
+          "type": "string"
+        },
+        "Narrative": {
+          "type": "string"
+        },
+        "Amount": {
+          "type": "number",
+          "format": "double"
+        },
+        "BatchReference": {
+          "type": "string"
+        },
+        "ProcessId": {
+          "type": "string"
+        },
+        "Notes": {
+          "type": "string"
+        }
+      }
+    },
+    "Api.Controllers.Suspense.SearchCriteriaModel": {
+      "type": "object",
+      "properties": {
+        "CreatedAtDateFrom": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "CreatedAtDateTo": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}
