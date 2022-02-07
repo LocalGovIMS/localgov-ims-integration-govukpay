@@ -75,12 +75,6 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object"
-            }
-          },
           "201": {
             "description": "Created",
             "schema": {
@@ -229,7 +223,7 @@
         "parameters": [
           {
             "type": "string",
-            "name": "searchCriteriaModel.type",
+            "name": "type",
             "in": "query"
           }
         ],
@@ -282,12 +276,6 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object"
-            }
-          },
           "202": {
             "description": "Accepted"
           },
@@ -465,12 +453,6 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object"
-            }
-          },
           "201": {
             "description": "Created",
             "schema": {
@@ -540,12 +522,12 @@
         "parameters": [
           {
             "type": "string",
-            "name": "searchCriteriaModel.receiptNumber",
+            "name": "receiptNumber",
             "in": "query"
           },
           {
             "type": "array",
-            "name": "searchCriteriaModel.fundCodes",
+            "name": "fundCodes",
             "in": "query",
             "collectionFormat": "multi",
             "items": {
@@ -554,35 +536,35 @@
           },
           {
             "type": "string",
-            "name": "searchCriteriaModel.accountReference",
+            "name": "accountReference",
             "in": "query"
           },
           {
             "type": "number",
-            "name": "searchCriteriaModel.amount",
+            "name": "amount",
             "in": "query",
             "format": "double"
           },
           {
             "type": "string",
-            "name": "searchCriteriaModel.startDate",
+            "name": "startDate",
             "in": "query",
             "format": "date-time"
           },
           {
             "type": "string",
-            "name": "searchCriteriaModel.endDate",
+            "name": "endDate",
             "in": "query",
             "format": "date-time"
           },
           {
             "type": "string",
-            "name": "searchCriteriaModel.appReference",
+            "name": "appReference",
             "in": "query"
           },
           {
             "type": "array",
-            "name": "searchCriteriaModel.mopCodes",
+            "name": "mopCodes",
             "in": "query",
             "collectionFormat": "multi",
             "items": {
@@ -591,17 +573,17 @@
           },
           {
             "type": "string",
-            "name": "searchCriteriaModel.narrative",
+            "name": "narrative",
             "in": "query"
           },
           {
             "type": "string",
-            "name": "searchCriteriaModel.internalReference",
+            "name": "internalReference",
             "in": "query"
           },
           {
             "type": "string",
-            "name": "searchCriteriaModel.pspReference",
+            "name": "pspReference",
             "in": "query"
           }
         ],
@@ -652,12 +634,6 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object"
-            }
-          },
           "201": {
             "description": "Created",
             "schema": {
@@ -725,13 +701,13 @@
         "parameters": [
           {
             "type": "string",
-            "name": "searchCriteriaModel.createdAtDateFrom",
+            "name": "createdAtDateFrom",
             "in": "query",
             "format": "date-time"
           },
           {
             "type": "string",
-            "name": "searchCriteriaModel.createdAtDateTo",
+            "name": "createdAtDateTo",
             "in": "query",
             "format": "date-time"
           }
@@ -783,12 +759,6 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object"
-            }
-          },
           "201": {
             "description": "Created",
             "schema": {

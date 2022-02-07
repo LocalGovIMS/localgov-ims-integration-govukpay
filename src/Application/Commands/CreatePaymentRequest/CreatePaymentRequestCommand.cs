@@ -1,8 +1,8 @@
-﻿using Application.Clients.LocalGovImsPaymentApi;
-using Application.Cryptography;
+﻿using Application.Cryptography;
 using Application.Data;
 using Application.Entities;
 using Application.Extensions;
+using Application.LocalGovImsApiClient;
 using Domain.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -25,31 +25,27 @@ namespace Application.Commands
     public class CreatePaymentRequestCommandHandler : IRequestHandler<CreatePaymentRequestCommand, CreatePaymentRequestCommandResult>
     {
         private readonly ICryptographyService _cryptographyService;
-        private readonly ILocalGovImsPaymentApiClient _localGovImsPaymentApiClient;
         private readonly Func<string, GovUKPayApiClient.Api.ICardPaymentsApi> _govUKPayApiClientFactory;
-
         private readonly IAsyncRepository<Payment> _paymentRepository;
-        private readonly LocalGovImsApiClient.IClient _localGovImsApiClient;
-
+        private readonly IClient _localGovImsApiClient;
         private readonly IHttpContextAccessor _httpContextAccessor;
+
+        private GovUKPayApiClient.Api.ICardPaymentsApi _govUkPayApiClient;
 
         private List<PendingTransactionModel> _pendingTransactions;
         private PendingTransactionModel _pendingTransaction;
-        private GovUKPayApiClient.Api.ICardPaymentsApi _govUkPayApiClient;
         private Payment _payment;
         private CreatePaymentRequestCommandResult _result;
 
         public CreatePaymentRequestCommandHandler(
             ICryptographyService cryptographyService,
-            ILocalGovImsPaymentApiClient localGovImsPaymentApiClient,
             Func<string, GovUKPayApiClient.Api.ICardPaymentsApi> govUKPayApiClientFactory,
             IAsyncRepository<Payment> paymentRepository,
-            LocalGovImsApiClient.IClient localGovImsApiClient,
+            IClient localGovImsApiClient,
             IHttpContextAccessor httpContextAccessor)
         {
             _cryptographyService = cryptographyService;
-            _localGovImsPaymentApiClient = localGovImsPaymentApiClient;
-            _govUKPayApiClientFactory = govUKPayApiClientFactory; 
+            _govUKPayApiClientFactory = govUKPayApiClientFactory;
             _paymentRepository = paymentRepository;
             _localGovImsApiClient = localGovImsApiClient;
             _httpContextAccessor = httpContextAccessor;
@@ -74,21 +70,66 @@ namespace Application.Commands
 
         private async Task ValidateRequest(CreatePaymentRequestCommand request)
         {
+            ValidateRequestValues(request);
+            await CheckThatProcessedTransactionsDoNotExist(request);
+            await CheckThatAPendingTransactionExists(request);
+        }
+
+        private void ValidateRequestValues(CreatePaymentRequestCommand request)
+        {
             if (request.Reference == null || request.Hash == null || request.Hash != _cryptographyService.GetHash(request.Reference))
             {
                 throw new PaymentException("The reference provided is not valid");
             }
-            
-            var processedTransactions = await _localGovImsPaymentApiClient.GetProcessedTransactions(request.Reference);
-            if (processedTransactions != null && processedTransactions.Any())
-            {
-                throw new PaymentException("The reference provided is no longer a valid pending payment");
-            }
+        }
 
-            _pendingTransactions = await _localGovImsPaymentApiClient.GetPendingTransactions(request.Reference);
-            if (_pendingTransactions == null || !_pendingTransactions.Any())
+        private async Task CheckThatProcessedTransactionsDoNotExist(CreatePaymentRequestCommand request)
+        {
+            try
             {
-                throw new PaymentException("The reference provided is no longer a valid pending payment");
+                var processedTransactions = await _localGovImsApiClient.ApiProcessedtransactionsGetAsync(
+                    string.Empty,
+                    null,
+                    string.Empty,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    request.Reference,
+                    string.Empty);
+
+                if (processedTransactions != null && processedTransactions.Any())
+                {
+                    throw new PaymentException("The reference provided is no longer a valid pending payment");
+                }
+            }
+            catch (ApiException ex)
+            {
+                if (ex.StatusCode == 404) return; // If no processed transactions are found the API will return a 404 (Not Found) - so that's fine
+
+                throw;
+            }
+        }
+
+        private async Task CheckThatAPendingTransactionExists(CreatePaymentRequestCommand request)
+        {
+            try
+            {
+                _pendingTransactions = (await _localGovImsApiClient.ApiPendingtransactionsGetAsync(request.Reference)).ToList();
+
+                if (_pendingTransactions == null || !_pendingTransactions.Any())
+                {
+                    throw new PaymentException("The reference provided is no longer a valid pending payment");
+                }
+            }
+            catch (ApiException ex)
+            {
+                if (ex.StatusCode == 404)
+                    throw new PaymentException("The reference provided is no longer a valid pending payment"); 
+
+                throw;
             }
         }
 
@@ -108,7 +149,7 @@ namespace Application.Commands
         {
             _payment = (await _paymentRepository.AddAsync(new Payment()
             {
-                Amount = _pendingTransactions.Sum(x => x.Amount ?? 0),
+                Amount = Convert.ToDecimal(_pendingTransactions.Sum(x => x.Amount ?? 0)),
                 CreatedDate = DateTime.Now,
                 Identifier = Guid.NewGuid(),
                 Reference = request.Reference
@@ -120,7 +161,7 @@ namespace Application.Commands
             try
             {
                 var model = new GovUKPayApiClient.Model.CreateCardPaymentRequest(
-                    _pendingTransactions.Sum(x => x.Amount ?? 0).ToPence(),
+                    Convert.ToDecimal(_pendingTransactions.Sum(x => x.Amount ?? 0)).ToPence(),
                     false,
                     await GetDescription(),
                     null,

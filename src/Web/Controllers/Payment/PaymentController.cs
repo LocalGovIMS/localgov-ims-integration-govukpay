@@ -53,7 +53,7 @@ namespace Web.Controllers
             {
                 var processPaymentResponse = await Mediator.Send(new PaymentResponseCommand() { PaymentId = id });
 
-                if (!processPaymentResponse.Success)
+                if (!processPaymentResponse.Success.HasValue || processPaymentResponse.Success.Value == false)
                 {
                     ViewBag.ExMessage = DefaultErrorMessage;
                     return View("~/Views/Shared/Error.cshtml");

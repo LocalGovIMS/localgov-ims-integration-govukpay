@@ -1,160 +1,248 @@
-﻿//using Application.Builders;
-//using Application.Clients.LocalGovImsPaymentApi;
-//using Application.Cryptography;
-//using Application.Models;
-//using Domain.Exceptions;
-//using FluentAssertions;
-//using Moq;
-//using System.Collections.Generic;
-//using System.Threading.Tasks;
-//using Xunit;
-//using Command = Application.Commands.PaymentRequestCommand;
-//using Handler = Application.Commands.PaymentRequestCommandHandler;
+﻿using Application.Commands;
+using Application.Cryptography;
+using Application.Data;
+using Application.Entities;
+using Application.LocalGovImsApiClient;
+using Application.Result;
+using Domain.Exceptions;
+using FluentAssertions;
+using GovUKPayApiClient.Model;
+using Microsoft.AspNetCore.Http;
+using Moq;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
+using Command = Application.Commands.CreatePaymentRequestCommand;
+using Handler = Application.Commands.CreatePaymentRequestCommandHandler;
 
-//namespace Application.UnitTests.Commands.PaymentRequest
-//{
-//    public class HandleTests
-//    {
-//        private readonly Handler _commandHandler;
-//        private Command _command;
+namespace Application.UnitTests.Commands.PaymentRequest
+{
+    public class HandleTests
+    {
+        private readonly Handler _commandHandler;
+        private Command _command;
 
-//        private readonly Mock<ICryptographyService> _mockCryptographyService = new Mock<ICryptographyService>();
-//        private readonly Mock<ILocalGovImsPaymentApiClient> _mockLocalGovImsPaymentApiClient = new Mock<ILocalGovImsPaymentApiClient>();
-//        private readonly Mock<IBuilder<PaymentBuilderArgs, Payment>> _mockBuilder = new Mock<IBuilder<PaymentBuilderArgs, Payment>>();
+        private readonly Mock<ICryptographyService> _mockCryptographyService = new Mock<ICryptographyService>();
+        private readonly Mock<Func<string, GovUKPayApiClient.Api.ICardPaymentsApi>> _mockGovUKPayApiClientFactory = new Mock<Func<string, GovUKPayApiClient.Api.ICardPaymentsApi>>();
+        private readonly Mock<IAsyncRepository<Payment>> _mockPaymentRepository = new Mock<IAsyncRepository<Payment>>();
+        private readonly Mock<IClient> _mockLocalGovImsApiClient = new Mock<IClient>();
+        private readonly Mock<IHttpContextAccessor> _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
 
-//        public HandleTests()
-//        {
-//            _commandHandler = new Handler(
-//                _mockCryptographyService.Object,
-//                _mockLocalGovImsPaymentApiClient.Object,
-//                _mockBuilder.Object);
+        private readonly Mock<GovUKPayApiClient.Api.ICardPaymentsApi> _mockGovUKPayApiClient = new Mock<GovUKPayApiClient.Api.ICardPaymentsApi>();
 
-//            SetupClient(System.Net.HttpStatusCode.OK);
-//            SetupCryptographyService();
-//            SetupCommand("reference", "hash");
-//        }
+        public HandleTests()
+        {
+            _commandHandler = new Handler(
+                _mockCryptographyService.Object,
+                _mockGovUKPayApiClientFactory.Object,
+                _mockPaymentRepository.Object,
+                _mockLocalGovImsApiClient.Object,
+                _mockHttpContextAccessor.Object);
 
-//        private void SetupClient(System.Net.HttpStatusCode statusCode)
-//        {
-//            _mockLocalGovImsPaymentApiClient.Setup(x => x.Notify(It.IsAny<NotificationModel>()))
-//                .ReturnsAsync(statusCode);
+            SetupClient();
+            SetupCryptographyService();
+            SetupCommand("reference", "hash");
+        }
 
-//            _mockLocalGovImsPaymentApiClient.Setup(x => x.GetProcessedTransactions(It.IsAny<string>()))
-//                .ReturnsAsync((List<ProcessedTransactionModel>)null);
+        private void SetupClient()
+        {
+            _mockLocalGovImsApiClient.Setup(x => x.ApiNotificationAsync(It.IsAny<NotificationModel>()));
 
-//            _mockLocalGovImsPaymentApiClient.Setup(x => x.GetPendingTransactions(It.IsAny<string>()))
-//                .ReturnsAsync(new List<PendingTransactionModel>() {
-//                    new PendingTransactionModel()
-//                    {
-//                        Reference = "Test"
-//                    }
-//                });
+            _mockLocalGovImsApiClient.Setup(x => x.ApiProcessedtransactionsGetAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<string>(),
+                    It.IsAny<double?>(),
+                    It.IsAny<DateTimeOffset?>(),
+                    It.IsAny<DateTimeOffset?>(),
+                    It.IsAny<string>(),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()))
+                .ReturnsAsync((List<ProcessedTransactionModel>)null);
 
-//            _mockLocalGovImsPaymentApiClient.Setup(x => x.GetCardSelfServiceMopCode())
-//                .ReturnsAsync(new MethodOfPaymentModel() { Code = "MC" });
+            _mockLocalGovImsApiClient.Setup(x => x.ApiPendingtransactionsGetAsync(It.IsAny<string>()))
+                .ReturnsAsync(new List<PendingTransactionModel>() {
+                    new PendingTransactionModel()
+                    {
+                        Reference = "Test"
+                    }
+                });
 
-//            _mockBuilder.Setup(x => x.Build(It.IsAny<PaymentBuilderArgs>()))
-//                .Returns(new Payment());
-//        }
+            _mockLocalGovImsApiClient.Setup(x => x.ApiMethodofpaymentsAsync(It.IsAny<string>()))
+                .ReturnsAsync(new List<MethodOfPaymentModel>() { new MethodOfPaymentModel() { Code = "MC" } });
 
-//        private void SetupCryptographyService()
-//        {
-//            _mockCryptographyService.Setup(x => x.GetHash(It.IsAny<string>()))
-//                .Returns("hash");
-//        }
+            _mockLocalGovImsApiClient.Setup(x => x.ApiFundsAsync(It.IsAny<string>()))
+                .ReturnsAsync(new FundModel() { 
+                    FundCode = "F1",
+                    FundName = "Fund Name"
+                });
 
-//        private void SetupCommand(string reference, string hash)
-//        {
-//            _command = new Command() { Reference = reference, Hash = hash };
-//        }
+            var nextLink = Newtonsoft.Json.JsonConvert.DeserializeObject<Link>("{ \"href\":\"test\", \"method\":\"method\" }");
+            var paymentState = Newtonsoft.Json.JsonConvert.DeserializeObject<PaymentState>("{ \"code\":\"test\", \"finished\": true, \"message\":\"method\", \"status\":\"success\" }");
 
-//        [Fact]
-//        public async Task Handle_throws_PaymentException_when_the_reference_is_null()
-//        {
-//            // Arrange
-//            SetupCommand(null, "hash");
+            _mockGovUKPayApiClient.Setup(x => x.CreateAPaymentAsync(It.IsAny<CreateCardPaymentRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new CreatePaymentResult(
+                    new PaymentLinks(null, null, null, nextLink, null, null, null),  
+                    10,
+                    null, 
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    false,
+                    "paymentId",
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    paymentState
+                ));
 
-//            // Act
-//            async Task task() => await _commandHandler.Handle(_command, new System.Threading.CancellationToken());
+            _mockGovUKPayApiClientFactory.Setup(x => x.Invoke(It.IsAny<string>()))
+                .Returns(_mockGovUKPayApiClient.Object);
 
-//            // Assert
-//            var result = await Assert.ThrowsAsync<PaymentException>(task);
-//            result.Message.Should().Be("The reference provided is not valid");
-//        }
+            _mockPaymentRepository.Setup(x => x.AddAsync(It.IsAny<Payment>()))
+                .ReturnsAsync(new OperationResult<Payment>(true) { Data = new Payment() { Identifier = Guid.NewGuid() } });
 
-//        [Fact]
-//        public async Task Handle_throws_PaymentException_when_the_hash_is_null()
-//        {
-//            // Arrange
-//            SetupCommand("reference", null);
+            _mockPaymentRepository.Setup(x => x.UpdateAsync(It.IsAny<Payment>()))
+                .ReturnsAsync(new OperationResult<Payment>(true) { Data = new Payment() { Identifier = Guid.NewGuid() } });
 
-//            // Act
-//            async Task task() => await _commandHandler.Handle(_command, new System.Threading.CancellationToken());
+            _mockHttpContextAccessor.SetupGet(x => x.HttpContext.Request.Scheme).Returns("https");
+            _mockHttpContextAccessor.SetupGet(x => x.HttpContext.Request.Host).Returns(new HostString("www.test.com"));
+            _mockHttpContextAccessor.SetupGet(x => x.HttpContext.Request.PathBase).Returns("/test");
+        }
 
-//            // Assert
-//            var result = await Assert.ThrowsAsync<PaymentException>(task);
-//            result.Message.Should().Be("The reference provided is not valid");
-//        }
+        private void SetupCryptographyService()
+        {
+            _mockCryptographyService.Setup(x => x.GetHash(It.IsAny<string>()))
+                .Returns("hash");
+        }
 
-//        [Fact]
-//        public async Task Handle_throws_PaymentException_when_the_hash_doesn_not_match_the_computed_hash()
-//        {
-//            // Arrange
-//            SetupCommand("reference", "hash that doesn't match");
+        private void SetupCommand(string reference, string hash)
+        {
+            _command = new Command() { Reference = reference, Hash = hash };
+        }
 
-//            // Act
-//            async Task task() => await _commandHandler.Handle(_command, new System.Threading.CancellationToken());
+        [Fact]
+        public async Task Handle_throws_PaymentException_when_the_reference_is_null()
+        {
+            // Arrange
+            SetupCommand(null, "hash");
 
-//            // Assert
-//            var result = await Assert.ThrowsAsync<PaymentException>(task);
-//            result.Message.Should().Be("The reference provided is not valid");
-//        }
+            // Act
+            async Task task() => await _commandHandler.Handle(_command, new CancellationToken());
 
-//        [Fact]
-//        public async Task Handle_throws_PaymentException_when_processed_transactions_exists_for_the_reference()
-//        {
-//            // Arrange
-//            _mockLocalGovImsPaymentApiClient.Setup(x => x.GetProcessedTransactions(It.IsAny<string>()))
-//                .ReturnsAsync(new List<ProcessedTransactionModel>() {
-//                    new ProcessedTransactionModel()
-//                    {
-//                        Reference = "Test"
-//                    }
-//                });
+            // Assert
+            var result = await Assert.ThrowsAsync<PaymentException>(task);
+            result.Message.Should().Be("The reference provided is not valid");
+        }
 
-//            // Act
-//            async Task task() => await _commandHandler.Handle(_command, new System.Threading.CancellationToken());
+        [Fact]
+        public async Task Handle_throws_PaymentException_when_the_hash_is_null()
+        {
+            // Arrange
+            SetupCommand("reference", null);
 
-//            // Assert
-//            var result = await Assert.ThrowsAsync<PaymentException>(task);
-//            result.Message.Should().Be("The reference provided is no longer a valid pending payment");
-//        }
+            // Act
+            async Task task() => await _commandHandler.Handle(_command, new CancellationToken());
 
-//        [Fact]
-//        public async Task Handle_throws_PaymentException_when_pending_transactions_do_not_exist_for_the_reference()
-//        {
-//            // Arrange
-//            _mockLocalGovImsPaymentApiClient.Setup(x => x.GetPendingTransactions(It.IsAny<string>()))
-//                .ReturnsAsync((List<PendingTransactionModel>)null);
+            // Assert
+            var result = await Assert.ThrowsAsync<PaymentException>(task);
+            result.Message.Should().Be("The reference provided is not valid");
+        }
 
-//            // Act
-//            async Task task() => await _commandHandler.Handle(_command, new System.Threading.CancellationToken());
+        [Fact]
+        public async Task Handle_throws_PaymentException_when_the_hash_does_not_match_the_computed_hash()
+        {
+            // Arrange
+            SetupCommand("reference", "hash that doesn't match");
 
-//            // Assert
-//            var result = await Assert.ThrowsAsync<PaymentException>(task);
-//            result.Message.Should().Be("The reference provided is no longer a valid pending payment");
-//        }
+            // Act
+            async Task task() => await _commandHandler.Handle(_command, new CancellationToken());
 
-//        [Fact]
-//        public async Task Handle_returns_Payment_when_successful()
-//        {
-//            // Arrange
+            // Assert
+            var result = await Assert.ThrowsAsync<PaymentException>(task);
+            result.Message.Should().Be("The reference provided is not valid");
+        }
 
-//            // Act
-//            var result = await _commandHandler.Handle(_command, new System.Threading.CancellationToken());
+        [Fact]
+        public async Task Handle_throws_PaymentException_when_processed_transactions_exists_for_the_reference()
+        {
+            // Arrange
+            _mockLocalGovImsApiClient.Setup(x => x.ApiProcessedtransactionsGetAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<string>(),
+                    It.IsAny<double?>(),
+                    It.IsAny<DateTimeOffset?>(),
+                    It.IsAny<DateTimeOffset?>(),
+                    It.IsAny<string>(),
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()))
+                .ReturnsAsync(new List<ProcessedTransactionModel>() {
+                    new ProcessedTransactionModel()
+                    {
+                        Reference = "Test"
+                    }
+                });
 
-//            // Assert
-//            result.Should().BeOfType<Payment>();
-//        }
-//    }
-//}
+            // Act
+            async Task task() => await _commandHandler.Handle(_command, new CancellationToken());
+
+            // Assert
+            var result = await Assert.ThrowsAsync<PaymentException>(task);
+            result.Message.Should().Be("The reference provided is no longer a valid pending payment");
+        }
+
+        [Fact]
+        public async Task Handle_throws_PaymentException_when_pending_transactions_do_not_exist_for_the_reference()
+        {
+            // Arrange
+            _mockLocalGovImsApiClient.Setup(x => x.ApiPendingtransactionsGetAsync(It.IsAny<string>()))
+                .ThrowsAsync(new ApiException("Not found", 404, string.Empty, null, null));
+
+            // Act
+            async Task task() => await _commandHandler.Handle(_command, new CancellationToken());
+
+            // Assert
+            var result = await Assert.ThrowsAsync<PaymentException>(task);
+            result.Message.Should().Be("The reference provided is no longer a valid pending payment");
+        }
+
+        [Fact]
+        public async Task Handle_returns_CreatePaymentRequestCommandResult_when_successful()
+        {
+            // Arrange
+
+            // Act
+            var result = await _commandHandler.Handle(_command, new CancellationToken());
+
+            // Assert
+            result.Should().BeOfType<CreatePaymentRequestCommandResult>();
+        }
+
+        [Fact]
+        public async Task Handle_returns_expected_values_when_successful()
+        {
+            // Arrange
+
+            // Act
+            var result = await _commandHandler.Handle(_command, new CancellationToken());
+
+            // Assert
+            result.Finished.Should().BeTrue();
+            result.NextUrl.Should().Be("test");
+            result.PaymentId.Should().Be("paymentId");
+            result.Status.Should().Be("successful");
+        }
+    }
+}

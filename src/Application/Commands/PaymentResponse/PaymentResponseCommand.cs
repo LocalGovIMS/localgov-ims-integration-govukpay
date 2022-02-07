@@ -1,10 +1,9 @@
-﻿using Application.Clients.LocalGovImsPaymentApi;
-using Application.Data;
+﻿using Application.Data;
 using Application.Entities;
+using Application.LocalGovImsApiClient;
 using Domain.Exceptions;
 using GovUKPayApiClient.Model;
 using MediatR;
-using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,21 +12,19 @@ using System.Threading.Tasks;
 
 namespace Application.Commands
 {
-    public class PaymentResponseCommand : IRequest<ProcessPaymentResponseModel>
+    public class PaymentResponseCommand : IRequest<ProcessPaymentResponse>
     {
         public string PaymentId { get; set; }
     }
 
-    public class PaymentResponseCommandHandler : IRequestHandler<PaymentResponseCommand, ProcessPaymentResponseModel>
+    public class PaymentResponseCommandHandler : IRequestHandler<PaymentResponseCommand, ProcessPaymentResponse>
     {
-        private readonly IConfiguration _configuration;
-        private readonly ILocalGovImsPaymentApiClient _localGovImsPaymentApiClient;
         private readonly Func<string, GovUKPayApiClient.Api.ICardPaymentsApi> _govUKPayApiClientFactory;
         private readonly IAsyncRepository<Payment> _paymentRepository;
-        private readonly LocalGovImsApiClient.IClient _imsClient;
+        private readonly IClient _localGovImsApiClient;
 
         private ProcessPaymentModel _processPaymentModel;
-        private ProcessPaymentResponseModel _processPaymentResponseModel;
+        private ProcessPaymentResponse _processPaymentResponse;
         private Payment _payment;
         private List<PendingTransactionModel> _pendingTransactions;
         private PendingTransactionModel _pendingTransaction;
@@ -35,20 +32,16 @@ namespace Application.Commands
         private GetPaymentResult _result;
 
         public PaymentResponseCommandHandler(
-            IConfiguration configuration,
-            ILocalGovImsPaymentApiClient localGovImsPaymentApiClient,
             Func<string, GovUKPayApiClient.Api.ICardPaymentsApi> govUkPayApiClientFactory,
             IAsyncRepository<Payment> paymentRepository,
-            LocalGovImsApiClient.IClient imsClient)
+            IClient localGovImsApiClient)
         {
-            _configuration = configuration;
-            _localGovImsPaymentApiClient = localGovImsPaymentApiClient;
             _govUKPayApiClientFactory = govUkPayApiClientFactory;
             _paymentRepository = paymentRepository;
-            _imsClient = imsClient;
+            _localGovImsApiClient = localGovImsApiClient;
         }
 
-        public async Task<ProcessPaymentResponseModel> Handle(PaymentResponseCommand request, CancellationToken cancellationToken)
+        public async Task<ProcessPaymentResponse> Handle(PaymentResponseCommand request, CancellationToken cancellationToken)
         {
             ValidateRequest(request);
 
@@ -68,7 +61,7 @@ namespace Application.Commands
 
             await ProcessPayment();
 
-            return _processPaymentResponseModel;
+            return _processPaymentResponse;
         }
 
         private void ValidateRequest(PaymentResponseCommand request)
@@ -91,11 +84,22 @@ namespace Application.Commands
         }
 
         private async Task GetPendingTransactions()
-        {
-            _pendingTransactions = await _localGovImsPaymentApiClient.GetPendingTransactions(_payment.Reference);
-            if (_pendingTransactions == null || !_pendingTransactions.Any())
+        { 
+            try
             {
-                throw new PaymentException("The reference provided is no longer a valid pending payment");
+                _pendingTransactions = (await _localGovImsApiClient.ApiPendingtransactionsGetAsync(_payment.Reference)).ToList();
+
+                if (_pendingTransactions == null || !_pendingTransactions.Any())
+                {
+                    throw new PaymentException("The reference provided is no longer a valid pending payment");
+                }
+            }
+            catch (ApiException ex)
+            {
+                if (ex.StatusCode == 404)
+                    throw new PaymentException("The reference provided is no longer a valid pending payment");
+
+                throw;
             }
         }
 
@@ -106,10 +110,9 @@ namespace Application.Commands
 
         private async Task GetClient()
         {
-            // TODO: Add Swagger spec data so that we know this is a string, not an object 
-            var apiKey = await _imsClient.ApiFundmetadataAsync(_pendingTransaction.FundCode, "GovUkPay.Api.Key");
+            var apiKey = await _localGovImsApiClient.ApiFundmetadataAsync(_pendingTransaction.FundCode, "GovUkPay.Api.Key");
 
-            _govUKPayApiClient = _govUKPayApiClientFactory(apiKey.ToString());
+            _govUKPayApiClient = _govUKPayApiClientFactory(apiKey);
         }
 
         private async Task GetPaymentStatus()
@@ -152,7 +155,7 @@ namespace Application.Commands
 
         private async Task ProcessPayment()
         {
-            _processPaymentResponseModel = await _localGovImsPaymentApiClient.ProcessPayment(_processPaymentModel.MerchantReference, _processPaymentModel);
+            _processPaymentResponse = await _localGovImsApiClient.ApiPendingtransactionProcesspaymentAsync(_processPaymentModel.MerchantReference, _processPaymentModel);
         }
     }
 }
