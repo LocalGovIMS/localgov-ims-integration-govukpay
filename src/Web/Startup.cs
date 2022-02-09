@@ -26,7 +26,7 @@ namespace Web
         {
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddControllersWithViews();
-            services.AddApplication();
+            services.AddApplication(Configuration);
             services.AddInfrastructure();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
