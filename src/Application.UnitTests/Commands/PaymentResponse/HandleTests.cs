@@ -1,12 +1,11 @@
-﻿using Application.Commands;
-using Application.Data;
+﻿using Application.Data;
 using Application.Entities;
-using Application.LocalGovImsApiClient;
 using Application.Result;
 using Domain.Exceptions;
 using FluentAssertions;
 using GovUKPayApiClient.Model;
-using Microsoft.Extensions.Configuration;
+using LocalGovImsApiClient.Client;
+using LocalGovImsApiClient.Model;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -26,7 +25,8 @@ namespace Application.UnitTests.Commands.PaymentResponse
 
         private readonly Mock<Func<string, GovUKPayApiClient.Api.ICardPaymentsApi>> _mockGovUKPayApiClientFactory = new Mock<Func<string, GovUKPayApiClient.Api.ICardPaymentsApi>>();
         private readonly Mock<IAsyncRepository<Payment>> _mockPaymentRepository = new Mock<IAsyncRepository<Payment>>();
-        private readonly Mock<IClient> _mockLocalGovImsApiClient = new Mock<IClient>();
+        private readonly Mock<LocalGovImsApiClient.Api.IPendingTransactionsApi> _mockPendingTransactionsApi = new Mock<LocalGovImsApiClient.Api.IPendingTransactionsApi>();
+        private readonly Mock<LocalGovImsApiClient.Api.IFundMetadataApi> _mockFundMetadataApi = new Mock<LocalGovImsApiClient.Api.IFundMetadataApi>();
 
         private readonly Mock<GovUKPayApiClient.Api.ICardPaymentsApi> _mockGovUKPayApiClient = new Mock<GovUKPayApiClient.Api.ICardPaymentsApi>();
 
@@ -35,7 +35,8 @@ namespace Application.UnitTests.Commands.PaymentResponse
             _commandHandler = new Handler(
                 _mockGovUKPayApiClientFactory.Object,
                 _mockPaymentRepository.Object,
-                _mockLocalGovImsApiClient.Object);
+                _mockPendingTransactionsApi.Object,
+                _mockFundMetadataApi.Object);
 
             SetupClient();
             SetupCommand(Guid.NewGuid().ToString());
@@ -44,9 +45,9 @@ namespace Application.UnitTests.Commands.PaymentResponse
         private void SetupClient()
         {
             _mockPaymentRepository.Setup(x => x.Get(It.IsAny<Expression<Func<Payment, bool>>>()))
-                .ReturnsAsync(new OperationResult<Payment>(true) { Data = new Payment() { Identifier = Guid.NewGuid() } });
+                .ReturnsAsync(new OperationResult<Payment>(true) { Data = new Payment() { Identifier = Guid.NewGuid(), Reference = "Test" } });
 
-            _mockLocalGovImsApiClient.Setup(x => x.ApiPendingtransactionsGetAsync(It.IsAny<string>()))
+            _mockPendingTransactionsApi.Setup(x => x.PendingTransactionsGetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<PendingTransactionModel>() {
                     new PendingTransactionModel()
                     {
@@ -54,8 +55,13 @@ namespace Application.UnitTests.Commands.PaymentResponse
                     }
                 });
 
-            _mockLocalGovImsApiClient.Setup(x => x.ApiFundmetadataAsync(It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync("test");
+            _mockFundMetadataApi.Setup(x => x.FundMetadataGetAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new FundMetadataModel()
+                {
+                    FundCode = "F1",
+                    Key = "Key",
+                    Value = "Value"
+                });
 
             _mockGovUKPayApiClientFactory.Setup(x => x.Invoke(It.IsAny<string>()))
                 .Returns(_mockGovUKPayApiClient.Object);
@@ -64,7 +70,7 @@ namespace Application.UnitTests.Commands.PaymentResponse
 
             _mockGovUKPayApiClient.Setup(x => x.GetAPaymentAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GetPaymentResult(
-                    null, 
+                    null,
                     0,
                     null,
                     null,
@@ -82,7 +88,7 @@ namespace Application.UnitTests.Commands.PaymentResponse
             _mockPaymentRepository.Setup(x => x.UpdateAsync(It.IsAny<Payment>()))
                 .ReturnsAsync(new OperationResult<Payment>(true) { Data = new Payment() { Identifier = Guid.NewGuid(), PaymentId = "paymentId", Reference = "refernce" } });
 
-            _mockLocalGovImsApiClient.Setup(x => x.ApiPendingtransactionProcesspaymentAsync(It.IsAny<string>(), It.IsAny<ProcessPaymentModel>()))
+            _mockPendingTransactionsApi.Setup(x => x.PendingTransactionsProcessPaymentAsync(It.IsAny<string>(), It.IsAny<ProcessPaymentModel>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ProcessPaymentResponse());
         }
 
@@ -107,13 +113,13 @@ namespace Application.UnitTests.Commands.PaymentResponse
             var result = await Assert.ThrowsAsync<PaymentException>(task);
             result.Message.Should().Be("Unable to process the payment");
         }
-        
+
         [Fact]
         public async Task Handle_throws_PaymentException_when_pending_transactions_do_not_exist_for_the_reference()
         {
             // Arrange
-            _mockLocalGovImsApiClient.Setup(x => x.ApiPendingtransactionsGetAsync(It.IsAny<string>()))
-                .ThrowsAsync(new ApiException("Not found", 404, string.Empty, null, null));
+            _mockPendingTransactionsApi.Setup(x => x.PendingTransactionsGetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new ApiException(404, string.Empty, null, null));
 
             // Act
             async Task task() => await _commandHandler.Handle(_command, new CancellationToken());

@@ -2,11 +2,12 @@
 using Application.Cryptography;
 using Application.Data;
 using Application.Entities;
-using Application.LocalGovImsApiClient;
 using Application.Result;
 using Domain.Exceptions;
 using FluentAssertions;
 using GovUKPayApiClient.Model;
+using LocalGovImsApiClient.Client;
+using LocalGovImsApiClient.Model;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using System;
@@ -27,7 +28,10 @@ namespace Application.UnitTests.Commands.PaymentRequest
         private readonly Mock<ICryptographyService> _mockCryptographyService = new Mock<ICryptographyService>();
         private readonly Mock<Func<string, GovUKPayApiClient.Api.ICardPaymentsApi>> _mockGovUKPayApiClientFactory = new Mock<Func<string, GovUKPayApiClient.Api.ICardPaymentsApi>>();
         private readonly Mock<IAsyncRepository<Payment>> _mockPaymentRepository = new Mock<IAsyncRepository<Payment>>();
-        private readonly Mock<IClient> _mockLocalGovImsApiClient = new Mock<IClient>();
+        private readonly Mock<LocalGovImsApiClient.Api.IPendingTransactionsApi> _mockPendingTransactionsApi = new Mock<LocalGovImsApiClient.Api.IPendingTransactionsApi>();
+        private readonly Mock<LocalGovImsApiClient.Api.IProcessedTransactionsApi> _mockProcessedTransactionsApi = new Mock<LocalGovImsApiClient.Api.IProcessedTransactionsApi>();
+        private readonly Mock<LocalGovImsApiClient.Api.IFundMetadataApi> _mockFundMetadataApi = new Mock<LocalGovImsApiClient.Api.IFundMetadataApi>();
+        private readonly Mock<LocalGovImsApiClient.Api.IFundsApi> _mockFundsApi = new Mock<LocalGovImsApiClient.Api.IFundsApi>();
         private readonly Mock<IHttpContextAccessor> _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
 
         private readonly Mock<GovUKPayApiClient.Api.ICardPaymentsApi> _mockGovUKPayApiClient = new Mock<GovUKPayApiClient.Api.ICardPaymentsApi>();
@@ -38,7 +42,10 @@ namespace Application.UnitTests.Commands.PaymentRequest
                 _mockCryptographyService.Object,
                 _mockGovUKPayApiClientFactory.Object,
                 _mockPaymentRepository.Object,
-                _mockLocalGovImsApiClient.Object,
+                _mockPendingTransactionsApi.Object,
+                _mockProcessedTransactionsApi.Object,
+                _mockFundMetadataApi.Object,
+                _mockFundsApi.Object,
                 _mockHttpContextAccessor.Object);
 
             SetupClient();
@@ -48,23 +55,22 @@ namespace Application.UnitTests.Commands.PaymentRequest
 
         private void SetupClient()
         {
-            _mockLocalGovImsApiClient.Setup(x => x.ApiNotificationAsync(It.IsAny<NotificationModel>()));
-
-            _mockLocalGovImsApiClient.Setup(x => x.ApiProcessedtransactionsGetAsync(
+            _mockProcessedTransactionsApi.Setup(x => x.ProcessedTransactionsSearchAsync(
                     It.IsAny<string>(),
-                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<List<string>>(),
                     It.IsAny<string>(),
-                    It.IsAny<double?>(),
-                    It.IsAny<DateTimeOffset?>(),
-                    It.IsAny<DateTimeOffset?>(),
+                    It.IsAny<decimal?>(),
+                    It.IsAny<DateTime?>(),
+                    It.IsAny<DateTime?>(),
                     It.IsAny<string>(),
-                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<List<string>>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(), 
+                    It.IsAny<CancellationToken>()))
                 .ReturnsAsync((List<ProcessedTransactionModel>)null);
 
-            _mockLocalGovImsApiClient.Setup(x => x.ApiPendingtransactionsGetAsync(It.IsAny<string>()))
+            _mockPendingTransactionsApi.Setup(x => x.PendingTransactionsGetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<PendingTransactionModel>() {
                     new PendingTransactionModel()
                     {
@@ -72,11 +78,17 @@ namespace Application.UnitTests.Commands.PaymentRequest
                     }
                 });
 
-            _mockLocalGovImsApiClient.Setup(x => x.ApiMethodofpaymentsAsync(It.IsAny<string>()))
-                .ReturnsAsync(new List<MethodOfPaymentModel>() { new MethodOfPaymentModel() { Code = "MC" } });
+            _mockFundMetadataApi.Setup(x => x.FundMetadataGetAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new FundMetadataModel()
+                {
+                    FundCode = "F1",
+                    Key = "Key",
+                    Value = "Value"
+                });
 
-            _mockLocalGovImsApiClient.Setup(x => x.ApiFundsAsync(It.IsAny<string>()))
-                .ReturnsAsync(new FundModel() { 
+            _mockFundsApi.Setup(x => x.FundsGetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new FundModel()
+                {
                     FundCode = "F1",
                     FundName = "Fund Name"
                 });
@@ -86,9 +98,9 @@ namespace Application.UnitTests.Commands.PaymentRequest
 
             _mockGovUKPayApiClient.Setup(x => x.CreateAPaymentAsync(It.IsAny<CreateCardPaymentRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new CreatePaymentResult(
-                    new PaymentLinks(null, null, null, nextLink, null, null, null),  
+                    new PaymentLinks(null, null, null, nextLink, null, null, null),
                     10,
-                    null, 
+                    null,
                     null,
                     null,
                     null,
@@ -176,18 +188,19 @@ namespace Application.UnitTests.Commands.PaymentRequest
         public async Task Handle_throws_PaymentException_when_processed_transactions_exists_for_the_reference()
         {
             // Arrange
-            _mockLocalGovImsApiClient.Setup(x => x.ApiProcessedtransactionsGetAsync(
+            _mockProcessedTransactionsApi.Setup(x => x.ProcessedTransactionsSearchAsync(
                     It.IsAny<string>(),
-                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<List<string>>(),
                     It.IsAny<string>(),
-                    It.IsAny<double?>(),
-                    It.IsAny<DateTimeOffset?>(),
-                    It.IsAny<DateTimeOffset?>(),
+                    It.IsAny<decimal?>(),
+                    It.IsAny<DateTime?>(),
+                    It.IsAny<DateTime?>(),
                     It.IsAny<string>(),
-                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<List<string>>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<ProcessedTransactionModel>() {
                     new ProcessedTransactionModel()
                     {
@@ -207,8 +220,8 @@ namespace Application.UnitTests.Commands.PaymentRequest
         public async Task Handle_throws_PaymentException_when_pending_transactions_do_not_exist_for_the_reference()
         {
             // Arrange
-            _mockLocalGovImsApiClient.Setup(x => x.ApiPendingtransactionsGetAsync(It.IsAny<string>()))
-                .ThrowsAsync(new ApiException("Not found", 404, string.Empty, null, null));
+            _mockPendingTransactionsApi.Setup(x => x.PendingTransactionsGetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new ApiException(404, string.Empty, null, null));
 
             // Act
             async Task task() => await _commandHandler.Handle(_command, new CancellationToken());
@@ -242,7 +255,7 @@ namespace Application.UnitTests.Commands.PaymentRequest
             result.Finished.Should().BeTrue();
             result.NextUrl.Should().Be("test");
             result.PaymentId.Should().Be("paymentId");
-            result.Status.Should().Be("successful");
+            result.Status.Should().Be("success");
         }
     }
 }

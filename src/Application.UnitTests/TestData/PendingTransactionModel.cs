@@ -1,4 +1,4 @@
-﻿using Application.LocalGovImsApiClient;
+﻿using LocalGovImsApiClient.Model;
 using System;
 
 namespace Application.UnitTests
@@ -10,11 +10,10 @@ namespace Application.UnitTests
             return new PendingTransactionModel()
             {
                 AccountReference = "AccountReference",
-                Amount = 1.00,
+                Amount = 1.00M,
                 BatchReference = "BatchReference",
                 CancelUrl = "CancelUrl",
                 CreatedDate = DateTime.Now,
-                ExpiryDate = null,
                 ExternalReference = "ExternalReference",
                 FailUrl = "FailUrl",
                 FundCode = "FF",
@@ -37,7 +36,7 @@ namespace Application.UnitTests
                 SuccessUrl = "SuccessUrl",
                 TransactionDate = DateTime.Now,
                 UserCode = 1,
-                VatAmount = 0.20,
+                VatAmount = 0.20M,
                 VatCode = "VV",
                 VatRate = 20F
             };

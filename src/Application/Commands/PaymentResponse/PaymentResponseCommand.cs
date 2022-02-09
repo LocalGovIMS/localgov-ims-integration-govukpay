@@ -1,8 +1,9 @@
 ﻿using Application.Data;
 using Application.Entities;
-using Application.LocalGovImsApiClient;
 using Domain.Exceptions;
 using GovUKPayApiClient.Model;
+using LocalGovImsApiClient.Client;
+using LocalGovImsApiClient.Model;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,8 @@ namespace Application.Commands
     {
         private readonly Func<string, GovUKPayApiClient.Api.ICardPaymentsApi> _govUKPayApiClientFactory;
         private readonly IAsyncRepository<Payment> _paymentRepository;
-        private readonly IClient _localGovImsApiClient;
+        private readonly LocalGovImsApiClient.Api.IPendingTransactionsApi _pendingTransactionsApi;
+        private readonly LocalGovImsApiClient.Api.IFundMetadataApi _fundMetadataApi;
 
         private ProcessPaymentModel _processPaymentModel;
         private ProcessPaymentResponse _processPaymentResponse;
@@ -34,11 +36,13 @@ namespace Application.Commands
         public PaymentResponseCommandHandler(
             Func<string, GovUKPayApiClient.Api.ICardPaymentsApi> govUkPayApiClientFactory,
             IAsyncRepository<Payment> paymentRepository,
-            IClient localGovImsApiClient)
+            LocalGovImsApiClient.Api.IPendingTransactionsApi pendingTransactionsApi,
+            LocalGovImsApiClient.Api.IFundMetadataApi fundMetadataApi)
         {
             _govUKPayApiClientFactory = govUkPayApiClientFactory;
             _paymentRepository = paymentRepository;
-            _localGovImsApiClient = localGovImsApiClient;
+            _pendingTransactionsApi = pendingTransactionsApi;
+            _fundMetadataApi = fundMetadataApi;
         }
 
         public async Task<ProcessPaymentResponse> Handle(PaymentResponseCommand request, CancellationToken cancellationToken)
@@ -87,7 +91,7 @@ namespace Application.Commands
         { 
             try
             {
-                _pendingTransactions = (await _localGovImsApiClient.ApiPendingtransactionsGetAsync(_payment.Reference)).ToList();
+                _pendingTransactions = (await _pendingTransactionsApi.PendingTransactionsGetAsync(_payment.Reference)).ToList();
 
                 if (_pendingTransactions == null || !_pendingTransactions.Any())
                 {
@@ -96,7 +100,7 @@ namespace Application.Commands
             }
             catch (ApiException ex)
             {
-                if (ex.StatusCode == 404)
+                if (ex.ErrorCode == 404)
                     throw new PaymentException("The reference provided is no longer a valid pending payment");
 
                 throw;
@@ -110,9 +114,9 @@ namespace Application.Commands
 
         private async Task GetClient()
         {
-            var apiKey = await _localGovImsApiClient.ApiFundmetadataAsync(_pendingTransaction.FundCode, "GovUkPay.Api.Key");
+            var apiKeyFundMetadata = await _fundMetadataApi.FundMetadataGetAsync(_pendingTransaction.FundCode, "GovUkPay.Api.Key");
 
-            _govUKPayApiClient = _govUKPayApiClientFactory(apiKey);
+            _govUKPayApiClient = _govUKPayApiClientFactory(apiKeyFundMetadata.Value);
         }
 
         private async Task GetPaymentStatus()
@@ -155,7 +159,7 @@ namespace Application.Commands
 
         private async Task ProcessPayment()
         {
-            _processPaymentResponse = await _localGovImsApiClient.ApiPendingtransactionProcesspaymentAsync(_processPaymentModel.MerchantReference, _processPaymentModel);
+            _processPaymentResponse = await _pendingTransactionsApi.PendingTransactionsProcessPaymentAsync(_processPaymentModel.MerchantReference, _processPaymentModel);
         }
     }
 }

@@ -2,8 +2,9 @@
 using Application.Data;
 using Application.Entities;
 using Application.Extensions;
-using Application.LocalGovImsApiClient;
 using Domain.Exceptions;
+using LocalGovImsApiClient.Client;
+using LocalGovImsApiClient.Model;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Serilog;
@@ -27,7 +28,10 @@ namespace Application.Commands
         private readonly ICryptographyService _cryptographyService;
         private readonly Func<string, GovUKPayApiClient.Api.ICardPaymentsApi> _govUKPayApiClientFactory;
         private readonly IAsyncRepository<Payment> _paymentRepository;
-        private readonly IClient _localGovImsApiClient;
+        private readonly LocalGovImsApiClient.Api.IPendingTransactionsApiAsync _pendingTransactionsApi;
+        private readonly LocalGovImsApiClient.Api.IProcessedTransactionsApi _processedTransactionsApi;
+        private readonly LocalGovImsApiClient.Api.IFundMetadataApi _fundMetadataApi;
+        private readonly LocalGovImsApiClient.Api.IFundsApi _fundsApi;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         private GovUKPayApiClient.Api.ICardPaymentsApi _govUkPayApiClient;
@@ -41,13 +45,19 @@ namespace Application.Commands
             ICryptographyService cryptographyService,
             Func<string, GovUKPayApiClient.Api.ICardPaymentsApi> govUKPayApiClientFactory,
             IAsyncRepository<Payment> paymentRepository,
-            IClient localGovImsApiClient,
+            LocalGovImsApiClient.Api.IPendingTransactionsApi pendingTransactionsApi,
+            LocalGovImsApiClient.Api.IProcessedTransactionsApi processedTransactionsApi,
+            LocalGovImsApiClient.Api.IFundMetadataApi fundMetadataApi,
+            LocalGovImsApiClient.Api.IFundsApi fundsApi,
             IHttpContextAccessor httpContextAccessor)
         {
             _cryptographyService = cryptographyService;
             _govUKPayApiClientFactory = govUKPayApiClientFactory;
             _paymentRepository = paymentRepository;
-            _localGovImsApiClient = localGovImsApiClient;
+            _pendingTransactionsApi = pendingTransactionsApi;
+            _processedTransactionsApi = processedTransactionsApi;
+            _fundMetadataApi = fundMetadataApi;
+            _fundsApi = fundsApi;
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -87,7 +97,7 @@ namespace Application.Commands
         {
             try
             {
-                var processedTransactions = await _localGovImsApiClient.ApiProcessedtransactionsGetAsync(
+                var processedTransactions = await _processedTransactionsApi.ProcessedTransactionsSearchAsync(
                     string.Empty,
                     null,
                     string.Empty,
@@ -105,9 +115,9 @@ namespace Application.Commands
                     throw new PaymentException("The reference provided is no longer a valid pending payment");
                 }
             }
-            catch (ApiException ex)
+            catch (LocalGovImsApiClient.Client.ApiException ex)
             {
-                if (ex.StatusCode == 404) return; // If no processed transactions are found the API will return a 404 (Not Found) - so that's fine
+                if (ex.ErrorCode == 404) return; // If no processed transactions are found the API will return a 404 (Not Found) - so that's fine
 
                 throw;
             }
@@ -117,16 +127,18 @@ namespace Application.Commands
         {
             try
             {
-                _pendingTransactions = (await _localGovImsApiClient.ApiPendingtransactionsGetAsync(request.Reference)).ToList();
+                var result = await _pendingTransactionsApi.PendingTransactionsGetAsync(request.Reference);
 
-                if (_pendingTransactions == null || !_pendingTransactions.Any())
+                if (result == null || !result.Any())
                 {
                     throw new PaymentException("The reference provided is no longer a valid pending payment");
                 }
+
+                _pendingTransactions = result.ToList();
             }
             catch (ApiException ex)
             {
-                if (ex.StatusCode == 404)
+                if (ex.ErrorCode == 404)
                     throw new PaymentException("The reference provided is no longer a valid pending payment"); 
 
                 throw;
@@ -140,16 +152,16 @@ namespace Application.Commands
 
         private async Task GetClient()
         {
-            var apiKey = await _localGovImsApiClient.ApiFundmetadataAsync(_pendingTransaction.FundCode, "GovUkPay.Api.Key");
+            var apiKeyFundMetadata = await _fundMetadataApi.FundMetadataGetAsync(_pendingTransaction.FundCode, "GovUkPay.Api.Key");
 
-            _govUkPayApiClient = _govUKPayApiClientFactory(apiKey);
+            _govUkPayApiClient = _govUKPayApiClientFactory(apiKeyFundMetadata.Value);
         }
 
         private async Task CreatePayment(CreatePaymentRequestCommand request)
         {
             _payment = (await _paymentRepository.AddAsync(new Payment()
             {
-                Amount = Convert.ToDecimal(_pendingTransactions.Sum(x => x.Amount ?? 0)),
+                Amount = Convert.ToDecimal(_pendingTransactions.Sum(x => x.Amount)),
                 CreatedDate = DateTime.Now,
                 Identifier = Guid.NewGuid(),
                 Reference = request.Reference
@@ -161,7 +173,7 @@ namespace Application.Commands
             try
             {
                 var model = new GovUKPayApiClient.Model.CreateCardPaymentRequest(
-                    Convert.ToDecimal(_pendingTransactions.Sum(x => x.Amount ?? 0)).ToPence(),
+                    Convert.ToDecimal(_pendingTransactions.Sum(x => x.Amount)).ToPence(),
                     false,
                     await GetDescription(),
                     null,
@@ -200,7 +212,7 @@ namespace Application.Commands
 
         private async Task<string> GetDescription()
         {
-            var fund = await _localGovImsApiClient.ApiFundsAsync(_pendingTransaction.FundCode);
+            var fund = await _fundsApi.FundsGetAsync(_pendingTransaction.FundCode);
 
             return fund.FundName;
         }
