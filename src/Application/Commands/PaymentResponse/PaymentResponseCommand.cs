@@ -1,5 +1,6 @@
 ﻿using Application.Data;
 using Application.Entities;
+using Application.Extensions;
 using Domain.Exceptions;
 using GovUKPayApiClient.Model;
 using LocalGovImsApiClient.Client;
@@ -59,7 +60,7 @@ namespace Application.Commands
 
             await GetPaymentStatus();
 
-            await UpdatePayment();
+            await UpdatePaymentStatus();
 
             BuildProcessPaymentModel();
 
@@ -124,34 +125,18 @@ namespace Application.Commands
             _result = await _govUKPayApiClient.GetAPaymentAsync(_payment.PaymentId);
         }
 
-        private async Task UpdatePayment()
+        private async Task UpdatePaymentStatus()
         {
-            _payment.Status = _result.State.Status;
-            _payment.Finished = _result.State.Finished;
+            _payment.UpdateStatus(_result.State);
 
             _payment = (await _paymentRepository.UpdateAsync(_payment)).Data;
         }
 
         private void BuildProcessPaymentModel()
         {
-            // More info here: https://docs.payments.service.gov.uk/api_reference/#status-and-finished
-            // TODO: Could do more with error codes (will do once we've got happy path working....)
-            // TODO: extract these strings into enum style classes
-            var authResultMappings = new Dictionary<string, string>()
-            {
-                { "created", "PENDING" },
-                { "started", "PENDING" },
-                { "submitted", "PENDING" },
-                { "capturable", "PENDING" },
-                { "success", "AUTHORISED" },
-                { "failed", "REFUSED" },
-                { "cancelled", "ERROR" },
-                { "error", "ERROR" }
-            };
-
             _processPaymentModel = new ProcessPaymentModel()
             {
-                AuthResult = authResultMappings[_result.State.Status],
+                AuthResult = _result.State.GetAuthResult(),
                 PspReference = _payment.PaymentId,
                 MerchantReference = _payment.Reference
             };        

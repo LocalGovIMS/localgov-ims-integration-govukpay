@@ -22,7 +22,12 @@ namespace Infrastructure.Data
 
         private static void SetupIndexes(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Payment>().HasIndex(x => x.Identifier);
+            modelBuilder.Entity<Payment>()
+                .HasIndex(x => x.Identifier);
+
+            modelBuilder.Entity<Payment>()
+                .HasIndex(x => x.Finished)
+                .IncludeProperties(x => x.Status);
         }
 
         private static void SetupColumnTypes(ModelBuilder modelBuilder)
