@@ -66,7 +66,7 @@ namespace Application.UnitTests.Commands.PaymentRequest
                     It.IsAny<List<string>>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>(), 
+                    It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync((List<ProcessedTransactionModel>)null);
 
@@ -124,7 +124,17 @@ namespace Application.UnitTests.Commands.PaymentRequest
                 .ReturnsAsync(new OperationResult<Payment>(true) { Data = new Payment() { Identifier = Guid.NewGuid() } });
 
             _mockPaymentRepository.Setup(x => x.UpdateAsync(It.IsAny<Payment>()))
-                .ReturnsAsync(new OperationResult<Payment>(true) { Data = new Payment() { Identifier = Guid.NewGuid() } });
+                .ReturnsAsync(new OperationResult<Payment>(true)
+                {
+                    Data = new Payment()
+                    {
+                        Identifier = Guid.NewGuid(),
+                        Finished = true,
+                        NextUrl = "test",
+                        PaymentId = "paymentId",
+                        Status = "success"
+                    }
+                });
 
             _mockHttpContextAccessor.SetupGet(x => x.HttpContext.Request.Scheme).Returns("https");
             _mockHttpContextAccessor.SetupGet(x => x.HttpContext.Request.Host).Returns(new HostString("www.test.com"));

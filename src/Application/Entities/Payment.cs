@@ -1,10 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Application.Entities
 {
     public class Payment : BaseEntity
     {
+        public Payment()
+        {
+            StatusHistory = new HashSet<PaymentStatusHistory>();
+        }
+
         public DateTime CreatedDate { get; set; }
         
         public Guid Identifier { get; set; }
@@ -23,5 +29,7 @@ namespace Application.Entities
         public string Status { get; set; }
 
         public bool Finished { get; set; }
+
+        public virtual ICollection<PaymentStatusHistory> StatusHistory { get; set; }
     }
 }

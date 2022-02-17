@@ -3,6 +3,7 @@ using Application.Data;
 using Application.Entities;
 using Application.Extensions;
 using Domain.Exceptions;
+using GovUKPayApiClient.Model;
 using LocalGovImsApiClient.Client;
 using LocalGovImsApiClient.Model;
 using MediatR;
@@ -39,6 +40,7 @@ namespace Application.Commands
         private List<PendingTransactionModel> _pendingTransactions;
         private PendingTransactionModel _pendingTransaction;
         private Payment _payment;
+        private CreatePaymentResult _createPaymentResult;
         private CreatePaymentRequestCommandResult _result;
 
         public CreatePaymentRequestCommandHandler(
@@ -74,6 +76,8 @@ namespace Application.Commands
             await CreateGovUkPayPayment(request);
 
             await UpdatePayment();
+
+            BuildResult();
 
             return _result;
         }
@@ -115,7 +119,7 @@ namespace Application.Commands
                     throw new PaymentException("The reference provided is no longer a valid pending payment");
                 }
             }
-            catch (LocalGovImsApiClient.Client.ApiException ex)
+            catch (ApiException ex)
             {
                 if (ex.ErrorCode == 404) return; // If no processed transactions are found the API will return a 404 (Not Found) - so that's fine
 
@@ -139,7 +143,7 @@ namespace Application.Commands
             catch (ApiException ex)
             {
                 if (ex.ErrorCode == 404)
-                    throw new PaymentException("The reference provided is no longer a valid pending payment"); 
+                    throw new PaymentException("The reference provided is no longer a valid pending payment");
 
                 throw;
             }
@@ -172,7 +176,7 @@ namespace Application.Commands
         {
             try
             {
-                var model = new GovUKPayApiClient.Model.CreateCardPaymentRequest(
+                var model = new CreateCardPaymentRequest(
                     Convert.ToDecimal(_pendingTransactions.Sum(x => x.Amount)).ToPence(),
                     false,
                     await GetDescription(),
@@ -180,10 +184,10 @@ namespace Application.Commands
                     null,
                     null,
                     false,
-                    new GovUKPayApiClient.Model.PrefilledCardholderDetails()
+                    new PrefilledCardholderDetails()
                     {
                         CardholderName = _pendingTransaction.PayeeName,
-                        BillingAddress = new GovUKPayApiClient.Model.Address()
+                        BillingAddress = new Address()
                         {
                             Line1 = _pendingTransaction.PayeePremiseNumber,
                             Line2 = _pendingTransaction.PayeeStreet,
@@ -194,15 +198,7 @@ namespace Application.Commands
                     request.Reference,
                     GetReturnUrl());
 
-                var result = await _govUkPayApiClient.CreateAPaymentAsync(model);
-
-                _result = new CreatePaymentRequestCommandResult()
-                {
-                    NextUrl = result.Links.NextUrl.Href,
-                    PaymentId = result.PaymentId,
-                    Status = result.State.Status,
-                    Finished = Convert.ToBoolean(result.State.Finished)
-                };
+                _createPaymentResult = await _govUkPayApiClient.CreateAPaymentAsync(model);
             }
             catch (Exception ex)
             {
@@ -226,12 +222,21 @@ namespace Application.Commands
 
         private async Task UpdatePayment()
         {
-            _payment.NextUrl = _result.NextUrl;
-            _payment.PaymentId = _result.PaymentId;
-            _payment.Status = _result.Status;
-            _payment.Finished = _result.Finished;
+            _payment.Update(_createPaymentResult);
+            _payment.UpdateStatus(_createPaymentResult.State);
 
             _payment = (await _paymentRepository.UpdateAsync(_payment)).Data;
+        }
+
+        private void BuildResult()
+        {
+            _result = new CreatePaymentRequestCommandResult()
+            {
+                NextUrl = _payment.NextUrl,
+                PaymentId = _payment.PaymentId,
+                Status = _payment.Status,
+                Finished = _payment.Finished
+            };
         }
     }
 }
