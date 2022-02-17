@@ -163,7 +163,21 @@ namespace Application.UnitTests.Commands.PaymentRequest
 
             // Assert
             var result = await Assert.ThrowsAsync<PaymentException>(task);
-            result.Message.Should().Be("The reference provided is not valid");
+            result.Message.Should().Be("The reference provided is null or empty");
+        }
+
+        [Fact]
+        public async Task Handle_throws_PaymentException_when_the_reference_is_empty()
+        {
+            // Arrange
+            SetupCommand(string.Empty, "hash");
+
+            // Act
+            async Task task() => await _commandHandler.Handle(_command, new CancellationToken());
+
+            // Assert
+            var result = await Assert.ThrowsAsync<PaymentException>(task);
+            result.Message.Should().Be("The reference provided is null or empty");
         }
 
         [Fact]
@@ -177,7 +191,21 @@ namespace Application.UnitTests.Commands.PaymentRequest
 
             // Assert
             var result = await Assert.ThrowsAsync<PaymentException>(task);
-            result.Message.Should().Be("The reference provided is not valid");
+            result.Message.Should().Be("The hash provided is null or empty");
+        }
+
+        [Fact]
+        public async Task Handle_throws_PaymentException_when_the_hash_is_empty()
+        {
+            // Arrange
+            SetupCommand("reference", string.Empty);
+
+            // Act
+            async Task task() => await _commandHandler.Handle(_command, new CancellationToken());
+
+            // Assert
+            var result = await Assert.ThrowsAsync<PaymentException>(task);
+            result.Message.Should().Be("The hash provided is null or empty");
         }
 
         [Fact]
@@ -191,7 +219,7 @@ namespace Application.UnitTests.Commands.PaymentRequest
 
             // Assert
             var result = await Assert.ThrowsAsync<PaymentException>(task);
-            result.Message.Should().Be("The reference provided is not valid");
+            result.Message.Should().Be("The hash is invalid");
         }
 
         [Fact]

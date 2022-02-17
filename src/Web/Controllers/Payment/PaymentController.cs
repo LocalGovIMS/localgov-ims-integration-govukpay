@@ -15,6 +15,8 @@ namespace Web.Controllers
 
         private const string DefaultErrorMessage = "Unable to process the payment";
 
+        private string FailureUrl => $"{_configuration.GetValue<string>("PaymentPortalUrl")}{_configuration.GetValue<string>("PaymentPortalFailureEndpoint")}";
+
         public PaymentController(
             ILogger<PaymentController> logger,
             IConfiguration configuration)
@@ -40,9 +42,8 @@ namespace Web.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, DefaultErrorMessage);
-
-                ViewBag.ExMessage = DefaultErrorMessage;
-                return View("~/Views/Shared/Error.cshtml");
+                
+                return Redirect(FailureUrl);
             }
         }
 
@@ -55,8 +56,7 @@ namespace Web.Controllers
 
                 if (processPaymentResponse.Success == false)
                 {
-                    ViewBag.ExMessage = DefaultErrorMessage;
-                    return View("~/Views/Shared/Error.cshtml");
+                    return Redirect(FailureUrl);
                 }
 
                 return Redirect(processPaymentResponse.RedirectUrl);
@@ -65,15 +65,8 @@ namespace Web.Controllers
             {
                 _logger.LogError(ex, DefaultErrorMessage);
 
-                ViewBag.ExMessage = DefaultErrorMessage;
-                return View("~/Views/Shared/Error.cshtml");
+                return Redirect(FailureUrl);
             }
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View();
         }
     }
 }
