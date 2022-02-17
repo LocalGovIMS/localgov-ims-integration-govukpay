@@ -6,7 +6,7 @@ namespace Application.Extensions
 {
     public static class PaymentExtensions
     {
-        public static void RecordCreatePaymentResult(this Payment source, CreatePaymentResult result)
+        public static void Update(this Payment source, CreatePaymentResult result)
         {
             source.NextUrl = result.Links.NextUrl.Href;
             source.PaymentId = result.PaymentId;
