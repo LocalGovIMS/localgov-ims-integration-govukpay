@@ -1,11 +1,9 @@
 ﻿using Application.Extensions;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Xunit;
 
 namespace Application.UnitTests.Extensions.Decimal
 {
-    [TestClass]
     public class ToPenceTests
     {
         [Theory]

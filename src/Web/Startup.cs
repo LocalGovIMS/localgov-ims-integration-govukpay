@@ -59,7 +59,15 @@ namespace Web
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                // If anything goes wrong, return to the payment portal
+                app.UseExceptionHandler(exceptionHandlerApp =>
+                {
+                    exceptionHandlerApp.Run(context => {
+                        context.Response.Redirect($"{Configuration.GetValue<string>("PaymentPortalUrl")}{Configuration.GetValue<string>("PaymentPortalFailureEndpoint")}");
+                        return System.Threading.Tasks.Task.CompletedTask;
+                    });
+                });
+
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
