@@ -4,6 +4,8 @@ using Application.Result;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -25,7 +27,14 @@ namespace Infrastructure.Data
             return new OperationResult<T>(true) { Data = entity };
         }
 
-        public virtual async Task<IResult<T>> AddAsync(T entity)
+        public virtual async Task<IResult<List<T>>> List(Expression<Func<T, bool>> criteria)
+        {
+            var results = DbContext.Set<T>().AsQueryable().Where(criteria);
+
+            return new OperationResult<List<T>>(true) { Data = await results.ToListAsync()};
+        }
+
+        public virtual async Task<IResult<T>> Add(T entity)
         {
             try
             {
@@ -42,7 +51,7 @@ namespace Infrastructure.Data
             }
         }
 
-        public virtual async Task<IResult<T>> UpdateAsync(T entity)
+        public virtual async Task<IResult<T>> Update(T entity)
         {
             try
             {

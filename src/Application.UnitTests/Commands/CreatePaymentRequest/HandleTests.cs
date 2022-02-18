@@ -18,7 +18,7 @@ using Xunit;
 using Command = Application.Commands.CreatePaymentRequestCommand;
 using Handler = Application.Commands.CreatePaymentRequestCommandHandler;
 
-namespace Application.UnitTests.Commands.PaymentRequest
+namespace Application.UnitTests.Commands.CreatePaymentRequest
 {
     public class HandleTests
     {
@@ -120,10 +120,10 @@ namespace Application.UnitTests.Commands.PaymentRequest
             _mockGovUKPayApiClientFactory.Setup(x => x.Invoke(It.IsAny<string>()))
                 .Returns(_mockGovUKPayApiClient.Object);
 
-            _mockPaymentRepository.Setup(x => x.AddAsync(It.IsAny<Payment>()))
+            _mockPaymentRepository.Setup(x => x.Add(It.IsAny<Payment>()))
                 .ReturnsAsync(new OperationResult<Payment>(true) { Data = new Payment() { Identifier = Guid.NewGuid() } });
 
-            _mockPaymentRepository.Setup(x => x.UpdateAsync(It.IsAny<Payment>()))
+            _mockPaymentRepository.Setup(x => x.Update(It.IsAny<Payment>()))
                 .ReturnsAsync(new OperationResult<Payment>(true)
                 {
                     Data = new Payment()

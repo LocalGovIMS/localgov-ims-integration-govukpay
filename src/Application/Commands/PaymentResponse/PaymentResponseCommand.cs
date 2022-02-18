@@ -129,7 +129,7 @@ namespace Application.Commands
         {
             _payment.UpdateStatus(_result.State);
 
-            _payment = (await _paymentRepository.UpdateAsync(_payment)).Data;
+            _payment = (await _paymentRepository.Update(_payment)).Data;
         }
 
         private void BuildProcessPaymentModel()

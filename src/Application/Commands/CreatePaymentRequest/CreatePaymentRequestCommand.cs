@@ -173,7 +173,7 @@ namespace Application.Commands
 
         private async Task CreatePayment(CreatePaymentRequestCommand request)
         {
-            _payment = (await _paymentRepository.AddAsync(new Payment()
+            _payment = (await _paymentRepository.Add(new Payment()
             {
                 Amount = Convert.ToDecimal(_pendingTransactions.Sum(x => x.Amount)),
                 CreatedDate = DateTime.Now,
@@ -235,7 +235,7 @@ namespace Application.Commands
             _payment.Update(_createPaymentResult);
             _payment.UpdateStatus(_createPaymentResult.State);
 
-            _payment = (await _paymentRepository.UpdateAsync(_payment)).Data;
+            _payment = (await _paymentRepository.Update(_payment)).Data;
         }
 
         private void BuildResult()
