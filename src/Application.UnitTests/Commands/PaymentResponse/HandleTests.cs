@@ -85,7 +85,7 @@ namespace Application.UnitTests.Commands.PaymentResponse
                     paymentState
                     ));
 
-            _mockPaymentRepository.Setup(x => x.UpdateAsync(It.IsAny<Payment>()))
+            _mockPaymentRepository.Setup(x => x.Update(It.IsAny<Payment>()))
                 .ReturnsAsync(new OperationResult<Payment>(true) { Data = new Payment() { Identifier = Guid.NewGuid(), PaymentId = "paymentId", Reference = "refernce" } });
 
             _mockPendingTransactionsApi.Setup(x => x.PendingTransactionsProcessPaymentAsync(It.IsAny<string>(), It.IsAny<ProcessPaymentModel>(), It.IsAny<CancellationToken>()))
