@@ -138,7 +138,8 @@ namespace Application.Commands
             {
                 AuthResult = _result.State.GetAuthResult(),
                 PspReference = _payment.PaymentId,
-                MerchantReference = _payment.Reference
+                MerchantReference = _payment.Reference,
+                Fee = Convert.ToDecimal(_result.Fee)
             };        
         }
 
