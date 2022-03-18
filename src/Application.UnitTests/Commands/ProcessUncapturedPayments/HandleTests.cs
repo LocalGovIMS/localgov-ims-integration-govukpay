@@ -15,10 +15,10 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
-using Command = Application.Commands.CleanupIncompletePaymentsCommand;
-using Handler = Application.Commands.CleanupIncompletePaymentsCommandHandler;
+using Command = Application.Commands.ProcessUncapturedPaymentsCommand;
+using Handler = Application.Commands.ProcessUncapturedPaymentsCommandHandler;
 
-namespace Application.UnitTests.Commands.CleanupIncompletePayments
+namespace Application.UnitTests.Commands.ProcessUncapturedPayments
 {
     public class HandleTests
     {
@@ -51,9 +51,9 @@ namespace Application.UnitTests.Commands.CleanupIncompletePayments
         private void SetupClient()
         {
             var configSection = new Mock<IConfigurationSection>();
-            configSection.Setup(a => a.Value).Returns("180");
+            configSection.Setup(a => a.Value).Returns("100");
 
-            _mockConfiguration.Setup(x => x.GetSection("CleanupIncompletePaymentsCommand:Threshold")).Returns(configSection.Object);
+            _mockConfiguration.Setup(x => x.GetSection("ProcessUncapturedPaymentsCommand:BatchSize")).Returns(configSection.Object);
 
             _mockPaymentRepository.Setup(x => x.List(It.IsAny<ISpecification<Payment>>(), It.IsAny<bool>()))
                 .ReturnsAsync(new OperationResult<List<Payment>>(true)
@@ -107,8 +107,7 @@ namespace Application.UnitTests.Commands.CleanupIncompletePayments
             _mockPaymentRepository.Setup(x => x.Update(It.IsAny<Payment>()))
                 .ReturnsAsync(new OperationResult<Payment>(true) { Data = new Payment() { Identifier = Guid.NewGuid(), PaymentId = "paymentId", Reference = "refernce" } });
 
-            _mockPendingTransactionsApi.Setup(x => x.PendingTransactionsProcessPaymentAsync(It.IsAny<string>(), It.IsAny<ProcessPaymentModel>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ProcessPaymentResponse());
+            _mockPendingTransactionsApi.Setup(x => x.PendingTransactionsProcessFeeAsync(It.IsAny<string>(), It.IsAny<ProcessFeeModel>(), It.IsAny<CancellationToken>()));
         }
 
         private void SetupCommand()
@@ -127,14 +126,14 @@ namespace Application.UnitTests.Commands.CleanupIncompletePayments
             var result = await _commandHandler.Handle(_command, new CancellationToken());
 
             // Assert
-            result.Should().BeOfType<CleanupIncompletePaymentsCommandResult>();
+            result.Should().BeOfType<ProcessUncapturedPaymentsCommandResult>();
             result.TotalIdentified.Should().Be(2);
-            result.TotalClosed.Should().Be(0);
+            result.TotalMarkedAsCaptured.Should().Be(0);
             result.TotalErrors.Should().Be(2);
         }
 
         [Fact]
-        public async Task Handle_returns_CleanupIncompletePaymentsCommandResult_when_successful()
+        public async Task Handle_returns_ProcessUncapturedPaymentsCommandResult_when_successful()
         {
             // Arrange
 
@@ -142,9 +141,9 @@ namespace Application.UnitTests.Commands.CleanupIncompletePayments
             var result = await _commandHandler.Handle(_command, new CancellationToken());
 
             // Assert
-            result.Should().BeOfType<CleanupIncompletePaymentsCommandResult>();
+            result.Should().BeOfType<ProcessUncapturedPaymentsCommandResult>();
             result.TotalIdentified.Should().Be(2);
-            result.TotalClosed.Should().Be(2);
+            result.TotalMarkedAsCaptured.Should().Be(2);
             result.TotalErrors.Should().Be(0);
         }
 

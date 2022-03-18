@@ -10,9 +10,21 @@ namespace Application.Extensions
         {
             source.NextUrl = result.Links.NextUrl.Href;
             source.PaymentId = result.PaymentId;
+
+            source.UpdateStatus(result.State);
         }
 
-        public static void UpdateStatus(this Payment source, PaymentState state)
+        public static void Update(this Payment source, GetPaymentResult result)
+        {
+            if (!string.IsNullOrEmpty(result.SettlementSummary?.CapturedDate))
+            {
+                source.CapturedDate = Convert.ToDateTime(result.SettlementSummary?.CapturedDate);
+            }
+
+            source.UpdateStatus(result.State);
+        }
+
+        private static void UpdateStatus(this Payment source, PaymentState state)
         {
             source.Status = state.Status;
             source.Finished = state.Finished;

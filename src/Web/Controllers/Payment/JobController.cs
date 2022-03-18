@@ -36,5 +36,24 @@ namespace Web.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
+        [HttpGet("ProcessUncapturedPayments")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ProcessUncapturedPayments()
+        {
+            try
+            {
+                var result = await Mediator.Send(new ProcessUncapturedPaymentsCommand());
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unable to process uncaptured payments");
+
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
     }
 }

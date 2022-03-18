@@ -34,6 +34,51 @@ namespace Infrastructure.Data
             return new OperationResult<List<T>>(true) { Data = await results.ToListAsync()};
         }
 
+        public virtual async Task<IResult<T>> Single(ISpecification<T> spec, bool tracking = false)
+        {
+            var list = BuildQueryableUsingSpec(spec, tracking);
+
+            return new OperationResult<T>(true) { Data = await list.SingleOrDefaultAsync() };
+        }
+
+        public virtual async Task<IResult<T>> First(ISpecification<T> spec, bool tracking = false)
+        {
+            var list = BuildQueryableUsingSpec(spec, tracking);
+
+            return new OperationResult<T>(true) { Data = await list.FirstOrDefaultAsync() };
+        }
+
+        public virtual async Task<IResult<List<T>>> List(ISpecification<T> spec, bool tracking = false)
+        {
+            var result = BuildQueryableUsingSpec(spec, false);
+
+            return new OperationResult<List<T>>(true) { Data = await result.ToListAsync() };
+        }
+
+        private IQueryable<T> BuildQueryableUsingSpec(ISpecification<T> spec, bool tracking = false)
+        {
+            // fetch a Queryable that includes all expression-based includes
+            var queryableResultWithIncludes = spec.Includes
+                .Aggregate(DbContext.Set<T>().AsQueryable(),
+                    (current, include) => current.Include(include));
+
+            // modify the IQueryable to include any string-based include statements
+            var secondaryResult = spec.IncludeStrings
+                .Aggregate(queryableResultWithIncludes,
+                    (current, include) => current.Include(include));
+
+            // add order statements to result
+            if (spec.Order != null) secondaryResult = secondaryResult.OrderBy(spec.Order);
+
+            if (spec.OrderDesc != null) secondaryResult = secondaryResult.OrderByDescending(spec.OrderDesc);
+
+            if (spec.Count != null) secondaryResult.Take(spec.Count.Value);
+
+            if (tracking) secondaryResult = secondaryResult.AsNoTracking();
+
+            return secondaryResult.Where(spec.Criteria);
+        }
+
         public virtual async Task<IResult<T>> Add(T entity)
         {
             try

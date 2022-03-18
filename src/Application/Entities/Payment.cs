@@ -14,9 +14,10 @@ namespace Application.Entities
         public DateTime CreatedDate { get; set; }
         
         public Guid Identifier { get; set; }
-        [StringLength(36)]
 
+        [StringLength(36)]
         public string Reference { get; set; }
+
         public decimal Amount { get; set; }
 
         [StringLength(255)]
@@ -29,6 +30,8 @@ namespace Application.Entities
         public string Status { get; set; }
 
         public bool Finished { get; set; }
+
+        public DateTime? CapturedDate { get; set; }
 
         public virtual ICollection<PaymentStatusHistory> StatusHistory { get; set; }
     }
