@@ -32,7 +32,7 @@ namespace Application.Commands
         private List<PendingTransactionModel> _pendingTransactions;
         private PendingTransactionModel _pendingTransaction;
         private GovUKPayApiClient.Api.ICardPaymentsApi _govUKPayApiClient;
-        private GetPaymentResult _result;
+        private GetPaymentResult _paymentResult;
 
         public PaymentResponseCommandHandler(
             Func<string, GovUKPayApiClient.Api.ICardPaymentsApi> govUkPayApiClientFactory,
@@ -122,12 +122,12 @@ namespace Application.Commands
 
         private async Task GetPaymentStatus()
         {
-            _result = await _govUKPayApiClient.GetAPaymentAsync(_payment.PaymentId);
+            _paymentResult = await _govUKPayApiClient.GetAPaymentAsync(_payment.PaymentId);
         }
 
         private async Task UpdatePaymentStatus()
         {
-            _payment.UpdateStatus(_result.State);
+            _payment.Update(_paymentResult);
 
             _payment = (await _paymentRepository.Update(_payment)).Data;
         }
@@ -136,10 +136,10 @@ namespace Application.Commands
         {
             _processPaymentModel = new ProcessPaymentModel()
             {
-                AuthResult = _result.State.GetAuthResult(),
+                AuthResult = _paymentResult.State.GetAuthResult(),
                 PspReference = _payment.PaymentId,
                 MerchantReference = _payment.Reference,
-                Fee = Convert.ToDecimal(_result.Fee)
+                Fee = Convert.ToDecimal(_paymentResult.Fee)/100
             };        
         }
 

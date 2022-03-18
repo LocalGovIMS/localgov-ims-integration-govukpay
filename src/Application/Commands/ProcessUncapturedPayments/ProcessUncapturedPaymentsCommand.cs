@@ -16,34 +16,35 @@ using System.Threading.Tasks;
 
 namespace Application.Commands
 {
-    public class CleanupIncompletePaymentsCommand : IRequest<CleanupIncompletePaymentsCommandResult>
+    public class ProcessUncapturedPaymentsCommand : IRequest<ProcessUncapturedPaymentsCommandResult>
     {
     }
 
-    public class CleanupIncompletePaymentsCommandHandler : IRequestHandler<CleanupIncompletePaymentsCommand, CleanupIncompletePaymentsCommandResult>
+    public class ProcessUncapturedPaymentsCommandHandler : IRequestHandler<ProcessUncapturedPaymentsCommand, ProcessUncapturedPaymentsCommandResult>
     {
         private readonly IConfiguration _configuration;
-        private readonly ILogger<CleanupIncompletePaymentsCommandHandler> _logger;
+        private readonly ILogger<ProcessUncapturedPaymentsCommandHandler> _logger;
         private readonly Func<string, GovUKPayApiClient.Api.ICardPaymentsApi> _govUKPayApiClientFactory;
         private readonly IAsyncRepository<Payment> _paymentRepository;
         private readonly LocalGovImsApiClient.Api.IPendingTransactionsApi _pendingTransactionsApi;
         private readonly LocalGovImsApiClient.Api.IFundMetadataApi _fundMetadataApi;
 
-        private int _thresholdInMiutes = 0;
-        private List<Payment> _incompletePayments;
-        private Payment _incompletePayment;
+        private int _batchSize = 0;
+        private List<Payment> _uncapturedPayments;
+        private Payment _uncapturedPayment;
         private List<PendingTransactionModel> _pendingTransactions;
         private PendingTransactionModel _pendingTransaction;
         private readonly Dictionary<string, string> _apiKeys = new();
         private GovUKPayApiClient.Api.ICardPaymentsApi _govUKPayApiClient;
         private GetPaymentResult _paymentResult;
-        private CleanupIncompletePaymentsCommandResult _cleanupIncompletePaymentsCommandResult;
+        private ProcessUncapturedPaymentsCommandResult _processUncapturedPaymentsCommandResult;
+        private ProcessFeeModel _processFeeModel;
 
         private int _numberOfErrors = 0;
 
-        public CleanupIncompletePaymentsCommandHandler(
+        public ProcessUncapturedPaymentsCommandHandler(
             IConfiguration configuration,
-            ILogger<CleanupIncompletePaymentsCommandHandler> logger,
+            ILogger<ProcessUncapturedPaymentsCommandHandler> logger,
             Func<string, GovUKPayApiClient.Api.ICardPaymentsApi> govUkPayApiClientFactory,
             IAsyncRepository<Payment> paymentRepository,
             LocalGovImsApiClient.Api.IPendingTransactionsApi pendingTransactionsApi,
@@ -57,45 +58,45 @@ namespace Application.Commands
             _fundMetadataApi = fundMetadataApi;
         }
 
-        public async Task<CleanupIncompletePaymentsCommandResult> Handle(CleanupIncompletePaymentsCommand request, CancellationToken cancellationToken)
+        public async Task<ProcessUncapturedPaymentsCommandResult> Handle(ProcessUncapturedPaymentsCommand request, CancellationToken cancellationToken)
         {
-            GetThresholdInMinutes();
+            GetBatchSize();
 
-            await GetIncompletePaymentsThatNeedClosing();
+            await GetUncapturedPayments();
 
-            await CleanupIncompletePayments();
+            await ProcessUncapturedPayments();
 
             CreateResult();
 
-            return _cleanupIncompletePaymentsCommandResult;
+            return _processUncapturedPaymentsCommandResult;
         }
 
-        private void GetThresholdInMinutes()
+        private void GetBatchSize()
         {
-            _thresholdInMiutes = _configuration.GetValue("CleanupIncompletePaymentsCommand:Threshold", 180);
+            _batchSize = _configuration.GetValue("ProcessUncapturedPaymentsCommand:BatchSize", 100);
         }
 
-        private async Task GetIncompletePaymentsThatNeedClosing()
+        private async Task GetUncapturedPayments()
         {
-            _incompletePayments = (await _paymentRepository.List(new IncompletePayments(DateTime.Now.AddMinutes(-_thresholdInMiutes)))).Data;
-                
-            _logger.LogInformation(_incompletePayments.Count + " incomplete payments found");
+            _uncapturedPayments = (await _paymentRepository.List(new UncapturedPayments(_batchSize))).Data;
+
+            _logger.LogInformation(_uncapturedPayments.Count + " uncaptured payments found");
         }
 
-        private async Task CleanupIncompletePayments()
+        private async Task ProcessUncapturedPayments()
         {
-            foreach(var incompletePayment in _incompletePayments)
+            foreach(var uncapturedPayment in _uncapturedPayments)
             {
-                _incompletePayment = incompletePayment;
+                _uncapturedPayment = uncapturedPayment;
 
-                await ProcessIncompletePayment();
+                await ProcessUncapturedPayment();
             }
 
-            _logger.LogInformation(_incompletePayments.Count + " rows processed");
+            _logger.LogInformation(_uncapturedPayments.Count + " rows processed");
             _logger.LogInformation(_numberOfErrors + " failures. See logs for more details");
         }
 
-        private async Task ProcessIncompletePayment()
+        private async Task ProcessUncapturedPayment()
         {
             try
             { 
@@ -108,12 +109,16 @@ namespace Application.Commands
                 await GetPaymentStatus();
 
                 await UpdatePaymentStatus();
+
+                BuildProcessFeeModel();
+
+                await ProcessPayment();
             }
             catch(Exception ex)
             {
                 _numberOfErrors++;
 
-                _logger.LogError(ex, "Unable to process incomplete payment record: " + _incompletePayment.Id);
+                _logger.LogError(ex, "Unable to process uncaptured payment record: " + _uncapturedPayment.Id);
             }
         }
 
@@ -121,7 +126,7 @@ namespace Application.Commands
         { 
             try
             {
-                _pendingTransactions = (await _pendingTransactionsApi.PendingTransactionsGetAsync(_incompletePayment.Reference)).ToList();
+                _pendingTransactions = (await _pendingTransactionsApi.PendingTransactionsGetAsync(_uncapturedPayment.Reference)).ToList();
 
                 if (_pendingTransactions == null || !_pendingTransactions.Any())
                 {
@@ -166,24 +171,39 @@ namespace Application.Commands
 
         private async Task GetPaymentStatus()
         {
-            _paymentResult = await _govUKPayApiClient.GetAPaymentAsync(_incompletePayment.PaymentId);
+            _paymentResult = await _govUKPayApiClient.GetAPaymentAsync(_uncapturedPayment.PaymentId);
         }
 
         private async Task UpdatePaymentStatus()
         {
-            _incompletePayment.Update(_paymentResult);
+            _uncapturedPayment.Update(_paymentResult);
 
-            _incompletePayment = (await _paymentRepository.Update(_incompletePayment)).Data;
+            _uncapturedPayment = (await _paymentRepository.Update(_uncapturedPayment)).Data;
         }
 
         private void CreateResult()
         {
-            _cleanupIncompletePaymentsCommandResult = new CleanupIncompletePaymentsCommandResult()
+            _processUncapturedPaymentsCommandResult = new ProcessUncapturedPaymentsCommandResult()
             {
-                TotalIdentified = _incompletePayments.Count,
-                TotalClosed = _incompletePayments.Count - _numberOfErrors,
+                TotalIdentified = _uncapturedPayments.Count,
+                TotalMarkedAsCaptured = _uncapturedPayments.Count - _numberOfErrors,
                 TotalErrors = _numberOfErrors
             };
+        }
+
+        private void BuildProcessFeeModel()
+        {
+            _processFeeModel = new ProcessFeeModel()
+            {
+                PspReference = _uncapturedPayment.PaymentId,
+                MerchantReference = _uncapturedPayment.Reference,
+                Fee = Convert.ToDecimal(_paymentResult.Fee)/100
+            };
+        }
+
+        private async Task ProcessPayment()
+        {
+            await _pendingTransactionsApi.PendingTransactionsProcessFeeAsync(_processFeeModel.MerchantReference, _processFeeModel);
         }
     }
 }

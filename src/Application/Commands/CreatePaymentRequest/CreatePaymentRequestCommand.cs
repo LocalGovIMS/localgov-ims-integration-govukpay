@@ -233,7 +233,6 @@ namespace Application.Commands
         private async Task UpdatePayment()
         {
             _payment.Update(_createPaymentResult);
-            _payment.UpdateStatus(_createPaymentResult.State);
 
             _payment = (await _paymentRepository.Update(_payment)).Data;
         }
