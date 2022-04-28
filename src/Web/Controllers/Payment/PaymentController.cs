@@ -15,7 +15,7 @@ namespace Web.Controllers
 
         private const string DefaultErrorMessage = "Unable to process the payment";
 
-        private string FailureUrl => $"{_configuration.GetValue<string>("PaymentPortalUrl")}{_configuration.GetValue<string>("PaymentPortalFailureEndpoint")}";
+        private string FailureUrl(string host) => $"{host}{_configuration.GetValue<string>("FailureEndpoint")}";
 
         public PaymentController(
             ILogger<PaymentController> logger,
@@ -36,15 +36,39 @@ namespace Web.Controllers
                         Reference = reference,
                         Hash = hash
                     });
-
+                
                 return Redirect(result.NextUrl);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, DefaultErrorMessage);
-                
-                return Redirect(FailureUrl);
+
+                return await DetermineFailureUrl(reference);
             }
+        }
+
+        private async Task<IActionResult> DetermineFailureUrl(string reference)
+        {
+            var paymentFailureUrl = await GetPaymentFailureUrl(reference);
+
+            if (!string.IsNullOrEmpty(paymentFailureUrl))
+            {
+                return Redirect(paymentFailureUrl);
+            }
+
+            return ReturnToCaller();
+        }
+
+        private async Task<string> GetPaymentFailureUrl(string reference)
+        {
+            return (await Mediator.Send(new GetPaymentCommand() { Reference = reference })).Payment?.FailureUrl;
+        }
+
+        private IActionResult ReturnToCaller()
+        {
+            Request.Headers.TryGetValue("Referer", out var host);
+
+            return Redirect(FailureUrl(host));
         }
 
         [HttpGet("PaymentResponse/{id}")]
@@ -54,18 +78,15 @@ namespace Web.Controllers
             {
                 var processPaymentResponse = await Mediator.Send(new PaymentResponseCommand() { PaymentId = id });
 
-                if (processPaymentResponse.Success == false)
-                {
-                    return Redirect(FailureUrl);
-                }
-
-                return Redirect(processPaymentResponse.RedirectUrl);
+                return Redirect(processPaymentResponse.NextUrl);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, DefaultErrorMessage);
 
-                return Redirect(FailureUrl);
+                var response = await Mediator.Send(new GetPaymentCommand() { Id = id });
+
+                return Redirect(response.Payment.FailureUrl);
             }
         }
     }

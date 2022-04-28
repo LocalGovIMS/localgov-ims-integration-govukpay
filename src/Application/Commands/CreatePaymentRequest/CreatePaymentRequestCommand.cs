@@ -178,7 +178,8 @@ namespace Application.Commands
                 Amount = Convert.ToDecimal(_pendingTransactions.Sum(x => x.Amount)),
                 CreatedDate = DateTime.Now,
                 Identifier = Guid.NewGuid(),
-                Reference = request.Reference
+                Reference = request.Reference,
+                FailureUrl = _pendingTransaction.FailUrl
             })).Data;
         }
 

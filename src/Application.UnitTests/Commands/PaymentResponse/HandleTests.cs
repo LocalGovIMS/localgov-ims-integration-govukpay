@@ -1,4 +1,5 @@
-﻿using Application.Data;
+﻿using Application.Commands;
+using Application.Data;
 using Application.Entities;
 using Application.Result;
 using Domain.Exceptions;
@@ -138,7 +139,7 @@ namespace Application.UnitTests.Commands.PaymentResponse
             var result = await _commandHandler.Handle(_command, new CancellationToken());
 
             // Assert
-            result.Should().BeOfType<ProcessPaymentResponse>();
+            result.Should().BeOfType<PaymentResponseCommandResult>();
         }
     }
 }

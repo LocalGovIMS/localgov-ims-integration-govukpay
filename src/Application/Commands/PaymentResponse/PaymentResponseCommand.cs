@@ -14,12 +14,12 @@ using System.Threading.Tasks;
 
 namespace Application.Commands
 {
-    public class PaymentResponseCommand : IRequest<ProcessPaymentResponse>
+    public class PaymentResponseCommand : IRequest<PaymentResponseCommandResult>
     {
         public string PaymentId { get; set; }
     }
 
-    public class PaymentResponseCommandHandler : IRequestHandler<PaymentResponseCommand, ProcessPaymentResponse>
+    public class PaymentResponseCommandHandler : IRequestHandler<PaymentResponseCommand, PaymentResponseCommandResult>
     {
         private readonly Func<string, GovUKPayApiClient.Api.ICardPaymentsApi> _govUKPayApiClientFactory;
         private readonly IAsyncRepository<Payment> _paymentRepository;
@@ -33,6 +33,7 @@ namespace Application.Commands
         private PendingTransactionModel _pendingTransaction;
         private GovUKPayApiClient.Api.ICardPaymentsApi _govUKPayApiClient;
         private GetPaymentResult _paymentResult;
+        private PaymentResponseCommandResult _result;
 
         public PaymentResponseCommandHandler(
             Func<string, GovUKPayApiClient.Api.ICardPaymentsApi> govUkPayApiClientFactory,
@@ -46,7 +47,7 @@ namespace Application.Commands
             _fundMetadataApi = fundMetadataApi;
         }
 
-        public async Task<ProcessPaymentResponse> Handle(PaymentResponseCommand request, CancellationToken cancellationToken)
+        public async Task<PaymentResponseCommandResult> Handle(PaymentResponseCommand request, CancellationToken cancellationToken)
         {
             ValidateRequest(request);
 
@@ -55,7 +56,7 @@ namespace Application.Commands
             await GetPendingTransactions();
 
             GetPendingTransaction();
-            
+
             await GetClient();
 
             await GetPaymentStatus();
@@ -66,7 +67,9 @@ namespace Application.Commands
 
             await ProcessPayment();
 
-            return _processPaymentResponse;
+            BuildResult();
+
+            return _result;
         }
 
         private void ValidateRequest(PaymentResponseCommand request)
@@ -146,6 +149,15 @@ namespace Application.Commands
         private async Task ProcessPayment()
         {
             _processPaymentResponse = await _pendingTransactionsApi.PendingTransactionsProcessPaymentAsync(_processPaymentModel.MerchantReference, _processPaymentModel);
+        }
+
+        private void BuildResult()
+        {
+            _result = new PaymentResponseCommandResult()
+            {
+                NextUrl = _processPaymentResponse.RedirectUrl,
+                Success = _processPaymentResponse.Success
+            };
         }
     }
 }

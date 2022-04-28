@@ -33,6 +33,9 @@ namespace Application.Entities
 
         public DateTime? CapturedDate { get; set; }
 
+        [StringLength(255)]
+        public string FailureUrl { get; set; }
+
         public virtual ICollection<PaymentStatusHistory> StatusHistory { get; set; }
     }
 }

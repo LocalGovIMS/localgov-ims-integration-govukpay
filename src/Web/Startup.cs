@@ -63,7 +63,7 @@ namespace Web
                 app.UseExceptionHandler(exceptionHandlerApp =>
                 {
                     exceptionHandlerApp.Run(context => {
-                        context.Response.Redirect($"{Configuration.GetValue<string>("PaymentPortalUrl")}{Configuration.GetValue<string>("PaymentPortalFailureEndpoint")}");
+                        context.Response.Redirect($"{Configuration.GetValue<string>("PaymentPortalUrl")}{Configuration.GetValue<string>("FailureEndpoint")}");
                         return System.Threading.Tasks.Task.CompletedTask;
                     });
                 });
