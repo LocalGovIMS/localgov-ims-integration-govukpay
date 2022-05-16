@@ -142,7 +142,9 @@ namespace Application.Commands
                 AuthResult = _paymentResult.State.GetAuthResult(),
                 PspReference = _payment.PaymentId,
                 MerchantReference = _payment.Reference,
-                Fee = Convert.ToDecimal(_paymentResult.Fee)/100
+                Fee = Convert.ToDecimal(_paymentResult.Fee)/100,
+                CardPrefix = _paymentResult.CardDetails?.FirstDigitsCardNumber,
+                CardSuffix = _paymentResult.CardDetails?.LastDigitsCardNumber
             };        
         }
 
