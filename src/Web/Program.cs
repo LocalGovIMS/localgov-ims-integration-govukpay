@@ -31,7 +31,7 @@ namespace Web
                 .ReadFrom.Configuration(configuration)
                 .CreateLogger();
 
-            Log.Information("Application Startup: LocalGovIms.Integrations.GovUkPay.Web");
+            Log.Information("Application Startup: LocalGovIms.Integration.GovUkPay.Web");
 
             using (var scope = host.Services.CreateScope())
             {

@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Local"
       }
     },
-    "LocalGovIms.Payments.Integrations.SmartPay.Web": {
+    "LocalGovIms.Payments.Integration.GovUkPay.Web": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
