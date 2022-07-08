@@ -1,0 +1,28 @@
+name: Build & Test
+
+on:
+  push:
+  pull_request:
+    branches: 
+      - main
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore Packages
+      run: | 
+        dotnet nuget add source https://nuget.pkg.github.com/LocalGovIMS/index.json --username bmbc-dev-detec --password ${{ secrets.PACKAGE_READER }} --store-password-in-clear-text --name "LocalGov IMS"
+        dotnet restore ./src/LocalGovIms.Integration.GovUKPay.sln
+    - name: Build Solution
+      run: dotnet build ./src/LocalGovIms.Integration.GovUKPay.sln --no-restore
+    - name: Test Application
+      run: dotnet test ./src/Application.UnitTests/Application.UnitTests.csproj --no-build --verbosity normal
