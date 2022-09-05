@@ -11,7 +11,6 @@ namespace Application.UnitTests
             {
                 AccountReference = "AccountReference",
                 Amount = 1.00M,
-                BatchReference = "BatchReference",
                 CancelUrl = "CancelUrl",
                 CreatedDate = DateTime.Now,
                 ExternalReference = "ExternalReference",

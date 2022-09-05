@@ -1,10 +1,9 @@
-﻿using Application.Data;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Application.Result
 {
     public class OperationResult<T> : IResult<T>
-    {
+    { 
         public OperationResult(bool success)
         {
             Success = success;

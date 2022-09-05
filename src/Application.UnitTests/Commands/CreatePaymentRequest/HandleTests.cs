@@ -67,10 +67,14 @@ namespace Application.UnitTests.Commands.CreatePaymentRequest
                     It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
+                    It.IsAny<int>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync((List<ProcessedTransactionModel>)null);
 
-            _mockPendingTransactionsApi.Setup(x => x.PendingTransactionsGetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            _mockPendingTransactionsApi.Setup(x => x.PendingTransactionsGetAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<int>(), 
+                    It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<PendingTransactionModel>() {
                     new PendingTransactionModel()
                     {
@@ -78,7 +82,11 @@ namespace Application.UnitTests.Commands.CreatePaymentRequest
                     }
                 });
 
-            _mockFundMetadataApi.Setup(x => x.FundMetadataGetAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            _mockFundMetadataApi.Setup(x => x.FundMetadataGetAsync(
+                    It.IsAny<string>(), 
+                    It.IsAny<string>(),
+                    It.IsAny<int>(), 
+                    It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new FundMetadataModel()
                 {
                     FundCode = "F1",
@@ -86,7 +94,10 @@ namespace Application.UnitTests.Commands.CreatePaymentRequest
                     Value = "Value"
                 });
 
-            _mockFundsApi.Setup(x => x.FundsGetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            _mockFundsApi.Setup(x => x.FundsGetAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<int>(), 
+                    It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new FundModel()
                 {
                     FundCode = "F1",
@@ -96,9 +107,12 @@ namespace Application.UnitTests.Commands.CreatePaymentRequest
             var nextLink = Newtonsoft.Json.JsonConvert.DeserializeObject<Link>("{ \"href\":\"test\", \"method\":\"method\" }");
             var paymentState = Newtonsoft.Json.JsonConvert.DeserializeObject<PaymentState>("{ \"code\":\"test\", \"finished\": true, \"message\":\"method\", \"status\":\"success\" }");
 
-            _mockGovUKPayApiClient.Setup(x => x.CreateAPaymentAsync(It.IsAny<CreateCardPaymentRequest>(), It.IsAny<CancellationToken>()))
+            _mockGovUKPayApiClient.Setup(x => x.CreateAPaymentAsync(
+                    It.IsAny<CreateCardPaymentRequest>(),
+                    It.IsAny<int>(), 
+                    It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new CreatePaymentResult(
-                    new PaymentLinks(null, null, null, nextLink, null, null, null),
+                    new PaymentLinks(null, null, null, null, nextLink, null, null, null),
                     10,
                     null,
                     null,
@@ -238,6 +252,7 @@ namespace Application.UnitTests.Commands.CreatePaymentRequest
                     It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
+                    It.IsAny<int>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<ProcessedTransactionModel>() {
                     new ProcessedTransactionModel()
@@ -258,7 +273,10 @@ namespace Application.UnitTests.Commands.CreatePaymentRequest
         public async Task Handle_throws_PaymentException_when_pending_transactions_do_not_exist_for_the_reference()
         {
             // Arrange
-            _mockPendingTransactionsApi.Setup(x => x.PendingTransactionsGetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            _mockPendingTransactionsApi.Setup(x => x.PendingTransactionsGetAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<int>(), 
+                    It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new ApiException(404, string.Empty, null, null));
 
             // Act

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Application.Entities
 {
+    [ExcludeFromCodeCoverage]
     public class ApplicationLog : BaseEntity
     {
         public string Message { get; set; }

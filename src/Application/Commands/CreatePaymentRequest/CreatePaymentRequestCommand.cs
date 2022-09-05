@@ -69,11 +69,11 @@ namespace Application.Commands
 
             GetPendingTransaction();
 
+            await CreateIntegrationPayment(request);
+
             await GetClient();
-
-            await CreatePayment(request);
-
-            await CreateGovUkPayPayment(request);
+            
+            await CreateGovUKPayPayment(request);
 
             await UpdatePayment();
 
@@ -164,14 +164,7 @@ namespace Application.Commands
             _pendingTransaction = _pendingTransactions.FirstOrDefault();
         }
 
-        private async Task GetClient()
-        {
-            var apiKeyFundMetadata = await _fundMetadataApi.FundMetadataGetAsync(_pendingTransaction.FundCode, "GovUkPay.Api.Key");
-
-            _govUkPayApiClient = _govUKPayApiClientFactory(apiKeyFundMetadata.Value);
-        }
-
-        private async Task CreatePayment(CreatePaymentRequestCommand request)
+        private async Task CreateIntegrationPayment(CreatePaymentRequestCommand request)
         {
             _payment = (await _paymentRepository.Add(new Payment()
             {
@@ -183,7 +176,14 @@ namespace Application.Commands
             })).Data;
         }
 
-        private async Task CreateGovUkPayPayment(CreatePaymentRequestCommand request)
+        private async Task GetClient()
+        {
+            var apiKeyFundMetadata = await _fundMetadataApi.FundMetadataGetAsync(_pendingTransaction.FundCode, "GovUkPay.Api.Key");
+
+            _govUkPayApiClient = _govUKPayApiClientFactory(apiKeyFundMetadata.Value);
+        }
+
+        private async Task CreateGovUKPayPayment(CreatePaymentRequestCommand request)
         {
             try
             {
