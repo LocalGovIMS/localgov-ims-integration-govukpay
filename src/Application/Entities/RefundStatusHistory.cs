@@ -5,12 +5,12 @@ using System.Diagnostics.CodeAnalysis;
 namespace Application.Entities
 {
     [ExcludeFromCodeCoverage]
-    public class PaymentStatusHistory : BaseEntity
+    public class RefundStatusHistory : BaseEntity
     {
         public DateTime CreatedDate { get; set; }
         
-        public int PaymentId { get; set; }
-        public Payment Payment { get; set; }
+        public int RefundId { get; set; }
+        public Refund Refund { get; set; }
 
         [StringLength(5)]
         public string Code { get; set; }

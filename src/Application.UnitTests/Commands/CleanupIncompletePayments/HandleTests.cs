@@ -65,7 +65,10 @@ namespace Application.UnitTests.Commands.CleanupIncompletePayments
                     }
                 });
 
-            _mockPendingTransactionsApi.Setup(x => x.PendingTransactionsGetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            _mockPendingTransactionsApi.Setup(x => x.PendingTransactionsGetAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<int>(),
+                    It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<PendingTransactionModel>() {
                     new PendingTransactionModel()
                     {
@@ -74,7 +77,11 @@ namespace Application.UnitTests.Commands.CleanupIncompletePayments
                     }
                 });
 
-            _mockFundMetadataApi.Setup(x => x.FundMetadataGetAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            _mockFundMetadataApi.Setup(x => x.FundMetadataGetAsync(
+                    It.IsAny<string>(), 
+                    It.IsAny<string>(),
+                    It.IsAny<int>(),
+                    It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new FundMetadataModel()
                 {
                     FundCode = "F1",
@@ -87,10 +94,14 @@ namespace Application.UnitTests.Commands.CleanupIncompletePayments
 
             var paymentState = Newtonsoft.Json.JsonConvert.DeserializeObject<PaymentState>("{ \"code\":\"test\", \"finished\": true, \"message\":\"method\", \"status\":\"success\" }");
 
-            _mockGovUKPayApiClient.Setup(x => x.GetAPaymentAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            _mockGovUKPayApiClient.Setup(x => x.GetAPaymentAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<int>(), 
+                    It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new GetPaymentResult(
                     null,
                     0,
+                    null,
                     null,
                     null,
                     null,
@@ -107,7 +118,11 @@ namespace Application.UnitTests.Commands.CleanupIncompletePayments
             _mockPaymentRepository.Setup(x => x.Update(It.IsAny<Payment>()))
                 .ReturnsAsync(new OperationResult<Payment>(true) { Data = new Payment() { Identifier = Guid.NewGuid(), PaymentId = "paymentId", Reference = "refernce" } });
 
-            _mockPendingTransactionsApi.Setup(x => x.PendingTransactionsProcessPaymentAsync(It.IsAny<string>(), It.IsAny<ProcessPaymentModel>(), It.IsAny<CancellationToken>()))
+            _mockPendingTransactionsApi.Setup(x => x.PendingTransactionsProcessPaymentAsync(
+                    It.IsAny<string>(), 
+                    It.IsAny<ProcessPaymentModel>(),
+                    It.IsAny<int>(), 
+                    It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ProcessPaymentResponse());
         }
 
@@ -120,7 +135,10 @@ namespace Application.UnitTests.Commands.CleanupIncompletePayments
         public async Task Handle_returns_expected_error_count_when_pending_transactions_do_not_exist_for_the_reference()
         {
             // Arrange
-            _mockPendingTransactionsApi.Setup(x => x.PendingTransactionsGetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            _mockPendingTransactionsApi.Setup(x => x.PendingTransactionsGetAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<int>(), 
+                    It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new ApiException(404, string.Empty, null, null));
 
             // Act
@@ -157,7 +175,12 @@ namespace Application.UnitTests.Commands.CleanupIncompletePayments
             var result = await _commandHandler.Handle(_command, new CancellationToken());
 
             // Assert
-            _mockFundMetadataApi.Verify(x => x.FundMetadataGetAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
+            _mockFundMetadataApi.Verify(x => x.FundMetadataGetAsync(
+                    It.IsAny<string>(), 
+                    It.IsAny<string>(),
+                    It.IsAny<int>(), 
+                    It.IsAny<CancellationToken>())
+                , Times.Once);
         }
     }
 }

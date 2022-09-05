@@ -6,11 +6,11 @@ using System.Diagnostics.CodeAnalysis;
 namespace Application.Entities
 {
     [ExcludeFromCodeCoverage]
-    public class Payment : BaseEntity
+    public class Refund : BaseEntity
     {
-        public Payment()
+        public Refund()
         {
-            StatusHistory = new HashSet<PaymentStatusHistory>();
+            StatusHistory = new HashSet<RefundStatusHistory>();
         }
 
         public DateTime CreatedDate { get; set; }
@@ -18,26 +18,24 @@ namespace Application.Entities
         public Guid Identifier { get; set; }
 
         [StringLength(36)]
-        public string Reference { get; set; }
+        public string RefundReference { get; set; }
+
+        [StringLength(36)]
+        public string PaymentReference { get; set; }
 
         public decimal Amount { get; set; }
 
         [StringLength(255)]
         public string PaymentId { get; set; }
 
-        [StringLength(100)]
-        public string NextUrl { get; set; }
+        [StringLength(255)]
+        public string RefundId { get; set; }
 
         [StringLength(100)]
         public string Status { get; set; }
 
         public bool Finished { get; set; }
 
-        public DateTime? CapturedDate { get; set; }
-
-        [StringLength(255)]
-        public string FailureUrl { get; set; }
-
-        public virtual ICollection<PaymentStatusHistory> StatusHistory { get; set; }
+        public virtual ICollection<RefundStatusHistory> StatusHistory { get; set; }
     }
 }

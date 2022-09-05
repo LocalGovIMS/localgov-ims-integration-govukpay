@@ -8,7 +8,7 @@ namespace Application.Commands
         public UncapturedPayments(int batchSize) 
             : base(x => x.PaymentId != null
                 && x.Finished == true
-                && x.Status == Status.Success
+                && x.Status == PaymentStatus.Success
                 && x.CapturedDate == null)
         {
             AddInclude(x => x.StatusHistory);

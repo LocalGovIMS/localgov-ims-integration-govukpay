@@ -33,6 +33,19 @@ namespace Application
                 );
             });
 
+            services.AddTransient((apiKey) =>
+            {
+                return new Func<string, GovUKPayApiClient.Api.IRefundingCardPaymentsApi>(
+                    (apiKey) => {
+
+                        var config = new GovUKPayApiClient.Client.Configuration();
+                        config.AccessToken = apiKey;
+
+                        return new GovUKPayApiClient.Api.RefundingCardPaymentsApi(config);
+                    }
+                );
+            });
+
             AddLocalGovImsApiClients(services, configuration);
 
             return services;

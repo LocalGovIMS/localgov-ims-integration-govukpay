@@ -139,7 +139,7 @@ namespace Application.Commands
         {
             _processPaymentModel = new ProcessPaymentModel()
             {
-                AuthResult = _paymentResult.State.GetAuthResult(),
+                AuthResult = _paymentResult.State.ToAuthResult(),
                 PspReference = _payment.PaymentId,
                 MerchantReference = _payment.Reference,
                 Fee = Convert.ToDecimal(_paymentResult.Fee)/100,

@@ -10,6 +10,7 @@ namespace Infrastructure.Data
         }
 
         public DbSet<Payment> Payments { get; set; }
+        public DbSet<Refund> Refunds { get; set; }
         public DbSet<ApplicationLog> Logs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -26,13 +27,29 @@ namespace Infrastructure.Data
                 .HasIndex(x => x.Identifier);
 
             modelBuilder.Entity<Payment>()
+                .HasIndex(x => x.Reference);
+
+            modelBuilder.Entity<Payment>()
                 .HasIndex(x => x.Finished)
                 .IncludeProperties(x => x.Status);
+
+            modelBuilder.Entity<Refund>()
+                .HasIndex(x => x.PaymentReference);
+
+            modelBuilder.Entity<Refund>()
+                .HasIndex(x => x.RefundReference);
+
+            modelBuilder.Entity<Refund>()
+                .HasIndex(x => x.Finished);
         }
 
         private static void SetupColumnTypes(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Payment>()
+                .Property(p => p.Amount)
+                .HasColumnType("decimal(18,2)");
+            
+            modelBuilder.Entity<Refund>()
                 .Property(p => p.Amount)
                 .HasColumnType("decimal(18,2)");
         }
