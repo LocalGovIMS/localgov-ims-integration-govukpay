@@ -22,7 +22,7 @@ namespace Application
           
             services.AddTransient((apiKey) =>
             {
-                return new Func<string, GovUKPayApiClient.Api.ICardPaymentsApi>(
+                return new Func<string, GovUKPayApiClient.Api.ICardPaymentsApiAsync>(
                     (apiKey) => {
 
                         var config = new GovUKPayApiClient.Client.Configuration();
@@ -35,7 +35,7 @@ namespace Application
 
             services.AddTransient((apiKey) =>
             {
-                return new Func<string, GovUKPayApiClient.Api.IRefundingCardPaymentsApi>(
+                return new Func<string, GovUKPayApiClient.Api.IRefundingCardPaymentsApiAsync>(
                     (apiKey) => {
 
                         var config = new GovUKPayApiClient.Client.Configuration();
