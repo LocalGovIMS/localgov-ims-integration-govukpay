@@ -27,7 +27,7 @@ namespace Application.UnitTests.Commands.CleanupIncompletePayments
 
         private readonly Mock<IConfiguration> _mockConfiguration = new();
         private readonly Mock<ILogger<Handler>> _mockLogger = new();
-        private readonly Mock<Func<string, GovUKPayApiClient.Api.ICardPaymentsApi>> _mockGovUKPayApiClientFactory = new();
+        private readonly Mock<Func<string, GovUKPayApiClient.Api.ICardPaymentsApiAsync>> _mockGovUKPayApiClientFactory = new();
         private readonly Mock<IAsyncRepository<Payment>> _mockPaymentRepository = new();
         private readonly Mock<LocalGovImsApiClient.Api.IPendingTransactionsApi> _mockPendingTransactionsApi = new();
         private readonly Mock<LocalGovImsApiClient.Api.IFundMetadataApi> _mockFundMetadataApi = new();

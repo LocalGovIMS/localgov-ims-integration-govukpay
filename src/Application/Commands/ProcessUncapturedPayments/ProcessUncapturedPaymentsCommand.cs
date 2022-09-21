@@ -24,10 +24,10 @@ namespace Application.Commands
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger<ProcessUncapturedPaymentsCommandHandler> _logger;
-        private readonly Func<string, GovUKPayApiClient.Api.ICardPaymentsApi> _govUKPayApiClientFactory;
+        private readonly Func<string, GovUKPayApiClient.Api.ICardPaymentsApiAsync> _govUKPayApiClientFactory;
         private readonly IAsyncRepository<Payment> _paymentRepository;
-        private readonly LocalGovImsApiClient.Api.IPendingTransactionsApi _pendingTransactionsApi;
-        private readonly LocalGovImsApiClient.Api.IFundMetadataApi _fundMetadataApi;
+        private readonly LocalGovImsApiClient.Api.IPendingTransactionsApiAsync _pendingTransactionsApi;
+        private readonly LocalGovImsApiClient.Api.IFundMetadataApiAsync _fundMetadataApi;
 
         private int _batchSize = 0;
         private List<Payment> _uncapturedPayments;
@@ -35,7 +35,7 @@ namespace Application.Commands
         private List<PendingTransactionModel> _pendingTransactions;
         private PendingTransactionModel _pendingTransaction;
         private readonly Dictionary<string, string> _apiKeys = new();
-        private GovUKPayApiClient.Api.ICardPaymentsApi _govUKPayApiClient;
+        private GovUKPayApiClient.Api.ICardPaymentsApiAsync _govUKPayApiClient;
         private GetPaymentResult _paymentResult;
         private ProcessUncapturedPaymentsCommandResult _processUncapturedPaymentsCommandResult;
         private ProcessFeeModel _processFeeModel;
@@ -45,10 +45,10 @@ namespace Application.Commands
         public ProcessUncapturedPaymentsCommandHandler(
             IConfiguration configuration,
             ILogger<ProcessUncapturedPaymentsCommandHandler> logger,
-            Func<string, GovUKPayApiClient.Api.ICardPaymentsApi> govUkPayApiClientFactory,
+            Func<string, GovUKPayApiClient.Api.ICardPaymentsApiAsync> govUkPayApiClientFactory,
             IAsyncRepository<Payment> paymentRepository,
-            LocalGovImsApiClient.Api.IPendingTransactionsApi pendingTransactionsApi,
-            LocalGovImsApiClient.Api.IFundMetadataApi fundMetadataApi)
+            LocalGovImsApiClient.Api.IPendingTransactionsApiAsync pendingTransactionsApi,
+            LocalGovImsApiClient.Api.IFundMetadataApiAsync fundMetadataApi)
         {
             _configuration = configuration;
             _logger = logger;

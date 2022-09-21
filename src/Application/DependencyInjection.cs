@@ -55,11 +55,11 @@ namespace Application
         {
             var localGovImsApiBaseUrl = configuration.GetValue<string>("LocalGovImsApiUrl");
 
-            services.AddTransient<LocalGovImsApiClient.Api.IFundMetadataApi>(s => new LocalGovImsApiClient.Api.FundMetadataApi(localGovImsApiBaseUrl));
-            services.AddTransient<LocalGovImsApiClient.Api.IFundsApi>(s => new LocalGovImsApiClient.Api.FundsApi(localGovImsApiBaseUrl));
-            services.AddTransient<LocalGovImsApiClient.Api.IMethodOfPaymentsApi>(s => new LocalGovImsApiClient.Api.MethodOfPaymentsApi(localGovImsApiBaseUrl));
-            services.AddTransient<LocalGovImsApiClient.Api.IPendingTransactionsApi>(s => new LocalGovImsApiClient.Api.PendingTransactionsApi(localGovImsApiBaseUrl));
-            services.AddTransient<LocalGovImsApiClient.Api.IProcessedTransactionsApi>(s => new LocalGovImsApiClient.Api.ProcessedTransactionsApi(localGovImsApiBaseUrl));
+            services.AddTransient<LocalGovImsApiClient.Api.IFundMetadataApiAsync>(s => new LocalGovImsApiClient.Api.FundMetadataApi(localGovImsApiBaseUrl));
+            services.AddTransient<LocalGovImsApiClient.Api.IFundsApiAsync>(s => new LocalGovImsApiClient.Api.FundsApi(localGovImsApiBaseUrl));
+            services.AddTransient<LocalGovImsApiClient.Api.IMethodOfPaymentsApiAsync>(s => new LocalGovImsApiClient.Api.MethodOfPaymentsApi(localGovImsApiBaseUrl));
+            services.AddTransient<LocalGovImsApiClient.Api.IPendingTransactionsApiAsync>(s => new LocalGovImsApiClient.Api.PendingTransactionsApi(localGovImsApiBaseUrl));
+            services.AddTransient<LocalGovImsApiClient.Api.IProcessedTransactionsApiAsync>(s => new LocalGovImsApiClient.Api.ProcessedTransactionsApi(localGovImsApiBaseUrl));
 
             return services;
         }

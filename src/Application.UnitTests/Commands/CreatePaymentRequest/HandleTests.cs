@@ -26,7 +26,7 @@ namespace Application.UnitTests.Commands.CreatePaymentRequest
         private Command _command;
 
         private readonly Mock<ICryptographyService> _mockCryptographyService = new Mock<ICryptographyService>();
-        private readonly Mock<Func<string, GovUKPayApiClient.Api.ICardPaymentsApi>> _mockGovUKPayApiClientFactory = new Mock<Func<string, GovUKPayApiClient.Api.ICardPaymentsApi>>();
+        private readonly Mock<Func<string, GovUKPayApiClient.Api.ICardPaymentsApiAsync>> _mockGovUKPayApiClientFactory = new Mock<Func<string, GovUKPayApiClient.Api.ICardPaymentsApiAsync>>();
         private readonly Mock<IAsyncRepository<Payment>> _mockPaymentRepository = new Mock<IAsyncRepository<Payment>>();
         private readonly Mock<LocalGovImsApiClient.Api.IPendingTransactionsApi> _mockPendingTransactionsApi = new Mock<LocalGovImsApiClient.Api.IPendingTransactionsApi>();
         private readonly Mock<LocalGovImsApiClient.Api.IProcessedTransactionsApi> _mockProcessedTransactionsApi = new Mock<LocalGovImsApiClient.Api.IProcessedTransactionsApi>();

@@ -21,25 +21,25 @@ namespace Application.Commands
 
     public class PaymentResponseCommandHandler : IRequestHandler<PaymentResponseCommand, PaymentResponseCommandResult>
     {
-        private readonly Func<string, GovUKPayApiClient.Api.ICardPaymentsApi> _govUKPayApiClientFactory;
+        private readonly Func<string, GovUKPayApiClient.Api.ICardPaymentsApiAsync> _govUKPayApiClientFactory;
         private readonly IAsyncRepository<Payment> _paymentRepository;
-        private readonly LocalGovImsApiClient.Api.IPendingTransactionsApi _pendingTransactionsApi;
-        private readonly LocalGovImsApiClient.Api.IFundMetadataApi _fundMetadataApi;
+        private readonly LocalGovImsApiClient.Api.IPendingTransactionsApiAsync _pendingTransactionsApi;
+        private readonly LocalGovImsApiClient.Api.IFundMetadataApiAsync _fundMetadataApi;
 
         private ProcessPaymentModel _processPaymentModel;
         private ProcessPaymentResponse _processPaymentResponse;
         private Payment _payment;
         private List<PendingTransactionModel> _pendingTransactions;
         private PendingTransactionModel _pendingTransaction;
-        private GovUKPayApiClient.Api.ICardPaymentsApi _govUKPayApiClient;
+        private GovUKPayApiClient.Api.ICardPaymentsApiAsync _govUKPayApiClient;
         private GetPaymentResult _paymentResult;
         private PaymentResponseCommandResult _result;
 
         public PaymentResponseCommandHandler(
-            Func<string, GovUKPayApiClient.Api.ICardPaymentsApi> govUkPayApiClientFactory,
+            Func<string, GovUKPayApiClient.Api.ICardPaymentsApiAsync> govUkPayApiClientFactory,
             IAsyncRepository<Payment> paymentRepository,
-            LocalGovImsApiClient.Api.IPendingTransactionsApi pendingTransactionsApi,
-            LocalGovImsApiClient.Api.IFundMetadataApi fundMetadataApi)
+            LocalGovImsApiClient.Api.IPendingTransactionsApiAsync pendingTransactionsApi,
+            LocalGovImsApiClient.Api.IFundMetadataApiAsync fundMetadataApi)
         {
             _govUKPayApiClientFactory = govUkPayApiClientFactory;
             _paymentRepository = paymentRepository;

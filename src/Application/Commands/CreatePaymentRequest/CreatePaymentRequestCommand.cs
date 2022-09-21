@@ -27,15 +27,15 @@ namespace Application.Commands
     public class CreatePaymentRequestCommandHandler : IRequestHandler<CreatePaymentRequestCommand, CreatePaymentRequestCommandResult>
     {
         private readonly ICryptographyService _cryptographyService;
-        private readonly Func<string, GovUKPayApiClient.Api.ICardPaymentsApi> _govUKPayApiClientFactory;
+        private readonly Func<string, GovUKPayApiClient.Api.ICardPaymentsApiAsync> _govUKPayApiClientFactory;
         private readonly IAsyncRepository<Payment> _paymentRepository;
         private readonly LocalGovImsApiClient.Api.IPendingTransactionsApiAsync _pendingTransactionsApi;
-        private readonly LocalGovImsApiClient.Api.IProcessedTransactionsApi _processedTransactionsApi;
-        private readonly LocalGovImsApiClient.Api.IFundMetadataApi _fundMetadataApi;
-        private readonly LocalGovImsApiClient.Api.IFundsApi _fundsApi;
+        private readonly LocalGovImsApiClient.Api.IProcessedTransactionsApiAsync _processedTransactionsApi;
+        private readonly LocalGovImsApiClient.Api.IFundMetadataApiAsync _fundMetadataApi;
+        private readonly LocalGovImsApiClient.Api.IFundsApiAsync _fundsApi;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        private GovUKPayApiClient.Api.ICardPaymentsApi _govUkPayApiClient;
+        private GovUKPayApiClient.Api.ICardPaymentsApiAsync _govUkPayApiClient;
 
         private List<PendingTransactionModel> _pendingTransactions;
         private PendingTransactionModel _pendingTransaction;
@@ -45,12 +45,12 @@ namespace Application.Commands
 
         public CreatePaymentRequestCommandHandler(
             ICryptographyService cryptographyService,
-            Func<string, GovUKPayApiClient.Api.ICardPaymentsApi> govUKPayApiClientFactory,
+            Func<string, GovUKPayApiClient.Api.ICardPaymentsApiAsync> govUKPayApiClientFactory,
             IAsyncRepository<Payment> paymentRepository,
-            LocalGovImsApiClient.Api.IPendingTransactionsApi pendingTransactionsApi,
-            LocalGovImsApiClient.Api.IProcessedTransactionsApi processedTransactionsApi,
-            LocalGovImsApiClient.Api.IFundMetadataApi fundMetadataApi,
-            LocalGovImsApiClient.Api.IFundsApi fundsApi,
+            LocalGovImsApiClient.Api.IPendingTransactionsApiAsync pendingTransactionsApi,
+            LocalGovImsApiClient.Api.IProcessedTransactionsApiAsync processedTransactionsApi,
+            LocalGovImsApiClient.Api.IFundMetadataApiAsync fundMetadataApi,
+            LocalGovImsApiClient.Api.IFundsApiAsync fundsApi,
             IHttpContextAccessor httpContextAccessor)
         {
             _cryptographyService = cryptographyService;
