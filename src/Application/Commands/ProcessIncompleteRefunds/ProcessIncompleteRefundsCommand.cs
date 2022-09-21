@@ -26,8 +26,8 @@ namespace Application.Commands
         private readonly ILogger<ProcessIncompleteRefundsCommandHandler> _logger;
         private readonly Func<string, GovUKPayApiClient.Api.IRefundingCardPaymentsApiAsync> _refundApiClientFactory;
         private readonly IAsyncRepository<Entities.Refund> _refundRepository;
-        private readonly LocalGovImsApiClient.Api.IPendingTransactionsApi _pendingTransactionsApi;
-        private readonly LocalGovImsApiClient.Api.IFundMetadataApi _fundMetadataApi;
+        private readonly LocalGovImsApiClient.Api.IPendingTransactionsApiAsync _pendingTransactionsApi;
+        private readonly LocalGovImsApiClient.Api.IFundMetadataApiAsync _fundMetadataApi;
 
         private int _batchSize = 0;
         private List<Entities.Refund> _incompleteRefunds;
@@ -47,8 +47,8 @@ namespace Application.Commands
             ILogger<ProcessIncompleteRefundsCommandHandler> logger,
             Func<string, GovUKPayApiClient.Api.IRefundingCardPaymentsApiAsync> refundApiClientFactory,
             IAsyncRepository<Entities.Refund> refundRepository,
-            LocalGovImsApiClient.Api.IPendingTransactionsApi pendingTransactionsApi,
-            LocalGovImsApiClient.Api.IFundMetadataApi fundMetadataApi)
+            LocalGovImsApiClient.Api.IPendingTransactionsApiAsync pendingTransactionsApi,
+            LocalGovImsApiClient.Api.IFundMetadataApiAsync fundMetadataApi)
         {
             _configuration = configuration;
             _logger = logger;
