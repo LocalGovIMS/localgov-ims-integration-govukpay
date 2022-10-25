@@ -200,9 +200,9 @@ namespace Application.Commands
                         CardholderName = _pendingTransaction.PayeeName,
                         BillingAddress = new Address()
                         {
-                            Line1 = _pendingTransaction.PayeePremiseNumber,
-                            Line2 = _pendingTransaction.PayeeStreet,
-                            City = _pendingTransaction.PayeeTown,
+                            Line1 = _pendingTransaction.PayeeAddressLine1,
+                            Line2 = _pendingTransaction.PayeeAddressLine2,
+                            City = _pendingTransaction.PayeeAddressLine3,
                             Postcode = _pendingTransaction.PayeePostCode
                         }
                     },
