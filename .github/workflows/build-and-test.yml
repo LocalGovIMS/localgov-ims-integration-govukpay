@@ -20,6 +20,7 @@ jobs:
         dotnet-version: 6.0.x
     - name: Restore Packages
       run: | 
+        dotnet nuget remove source "LocalGov IMS"
         dotnet nuget add source https://nuget.pkg.github.com/LocalGovIMS/index.json --username bmbc-dev-detec --password ${{ secrets.PACKAGE_READER }} --store-password-in-clear-text --name "LocalGov IMS"
         dotnet restore ./src/LocalGovIms.Integration.GovUKPay.sln
     - name: Build Solution
