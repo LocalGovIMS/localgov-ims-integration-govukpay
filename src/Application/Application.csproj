@@ -10,7 +10,7 @@
     <PackageReference Include="GovUKPayApiClient" Version="1.1.0" />
     <PackageReference Include="LocalGovImsApiClient" Version="1.5.0" />
     <PackageReference Include="MediatR" Version="11.1.0" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="7.0.2">
